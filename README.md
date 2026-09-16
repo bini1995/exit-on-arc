@@ -4,9 +4,11 @@
 
 Arc Launch Monitor compares what third-party services report about an Arc token with what its Uniswap V3 pool actually holds onchain.
 
-**Live demo:** https://exitonarc.xyz/monitor/
+[**Live demo →**](https://exitonarc.xyz/monitor/) · [**Project site →**](https://exitonarc.xyz) · [**X →**](https://x.com/EXITARC)
 
-**Source:** https://github.com/bini1995/exit-on-arc
+![Arc Launch Monitor preview](assets/arc-launch-monitor-preview.svg)
+
+> **Indexer headlines tell you what a service sees. Arc Launch Monitor adds direct onchain pool state so you can see what is actually there.**
 
 ---
 
@@ -158,6 +160,8 @@ No framework or build step is required.
 
 ```text
 /
+├── assets/
+│   └── arc-launch-monitor-preview.svg
 ├── index.html              # Exit Liquidity project site
 ├── styles.css
 ├── script.js
@@ -177,7 +181,7 @@ No framework or build step is required.
 
 Open:
 
-https://exitonarc.xyz/monitor/
+**https://exitonarc.xyz/monitor/**
 
 The `$EXIT` contract is loaded as the default real-world demo:
 
