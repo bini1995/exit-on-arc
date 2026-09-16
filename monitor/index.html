@@ -14,6 +14,7 @@
   <link rel="icon" href="../logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="monitor.css" />
   <link rel="stylesheet" href="onchain.css" />
+  <link rel="stylesheet" href="depth.css" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -75,7 +76,7 @@
     </section>
 
     <section class="strip" aria-label="Monitor capabilities">
-      <div>LIVE ARCPAD METADATA <i>◆</i> LIVE DEXSCREENER MARKET DATA <i>◆</i> LIVE ARC RPC POOL READS <i>◆</i> ARC // 5042 <i>◆</i> NO WALLET REQUIRED <i>◆</i> READ ONLY <i>◆</i></div>
+      <div>LIVE ARCPAD METADATA <i>◆</i> LIVE DEXSCREENER MARKET DATA <i>◆</i> LIVE ARC RPC POOL READS <i>◆</i> SELL-SIDE DEPTH ESTIMATES <i>◆</i> NO WALLET REQUIRED <i>◆</i> READ ONLY <i>◆</i></div>
     </section>
 
     <section class="section shell" id="results">
@@ -241,8 +242,65 @@
       </div>
     </section>
 
+    <section class="section shell depth-section" id="depth">
+      <div class="section-head">
+        <div>
+          <div class="kicker">03 // SELL-SIDE DEPTH ESTIMATOR</div>
+          <h2>HOW THIN IS<br /><span>THE EXIT?</span></h2>
+        </div>
+        <div class="depth-state">
+          <span>LOCAL V3 MODEL</span>
+          <strong id="depthStatus">WAITING</strong>
+        </div>
+      </div>
+
+      <div id="depthError" class="error-box" hidden></div>
+
+      <div class="depth-grid">
+        <article class="depth-panel">
+          <div class="panel-top"><span>RESERVE-AWARE ESTIMATE</span><b id="depthBadge" class="mini-badge loading">WAITING</b></div>
+          <div class="depth-summary">
+            <div><span>Tracked token</span><strong id="depthToken">—</strong></div>
+            <div><span>USDC held by pool</span><strong id="depthReserve">—</strong></div>
+            <div><span>Approx. reserve boundary</span><strong id="depthBoundary">—</strong></div>
+            <div><span>Pool fee</span><strong id="depthFee">—</strong></div>
+          </div>
+
+          <form id="depthForm" class="depth-form">
+            <label for="depthAmount">ESTIMATE A TOKEN → USDC SELL</label>
+            <div class="depth-input-row">
+              <input id="depthAmount" type="number" min="0" step="any" placeholder="Enter token amount" disabled />
+              <button id="depthSubmit" type="submit" disabled>ESTIMATE</button>
+            </div>
+          </form>
+
+          <div class="depth-result">
+            <div><span>Estimated USDC out</span><strong id="depthEstimateOut">—</strong></div>
+            <div><span>Reserve used</span><strong id="depthEstimateUsage">—</strong></div>
+            <div><span>Status</span><strong id="depthEstimateStatus" class="depth-result-status">—</strong></div>
+          </div>
+          <p class="chain-help">This is a local mathematical estimate from the current active-liquidity state and actual USDC reserve. It does not submit a quote or a transaction.</p>
+        </article>
+
+        <article class="depth-panel">
+          <div class="panel-top"><span>DEPTH LADDER</span><b class="mini-badge neutral">READ ONLY</b></div>
+          <div class="depth-table-wrap">
+            <table class="depth-table">
+              <thead><tr><th>Sell amount</th><th>Est. USDC out</th><th>Reserve used</th><th>Stress</th></tr></thead>
+              <tbody id="depthRows"><tr><td colspan="4">Waiting for a compatible USDC pool…</td></tr></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+
+      <div class="depth-note">
+        <strong>ESTIMATE, NOT A ROUTER QUOTE</strong>
+        <p>The model uses the current Uniswap V3 active-liquidity state, fee tier and live pool balances, then caps output at the USDC physically held by the pool. Tick crossings, range boundaries, router behavior, other pools and state changes can make real execution differ. Always verify with a live swap quote before drawing conclusions.</p>
+      </div>
+    </section>
+
     <section class="section shell compare-section">
-      <div class="kicker">03 // INDEXER COMPARISON</div>
+      <div class="kicker">04 // INDEXER COMPARISON</div>
       <div class="compare-intro">
         <h2>SAME TOKEN.<br /><span>DIFFERENT INDEXERS.</span></h2>
         <p>New-chain markets can be live before every wallet, indexer and discovery platform interprets them consistently. This view makes those differences visible without pretending every source exposes the same data.</p>
@@ -269,7 +327,7 @@
     </section>
 
     <section class="section shell about-section">
-      <div class="kicker">04 // WHY THIS EXISTS</div>
+      <div class="kicker">05 // WHY THIS EXISTS</div>
       <div class="about-grid">
         <h2>BUILT FROM A<br />REAL MAINNET<br /><span>EDGE CASE.</span></h2>
         <div>
@@ -291,5 +349,6 @@
   <div id="toast" class="toast" role="status" aria-live="polite">COPIED</div>
   <script src="monitor.js"></script>
   <script src="onchain.js"></script>
+  <script src="depth.js"></script>
 </body>
 </html>
