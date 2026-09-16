@@ -9,6 +9,7 @@ const form = $('tokenForm');
 const input = $('tokenInput');
 const toast = $('toast');
 
+let activeContext = null;
 input.value = new URLSearchParams(location.search).get('token') || EXIT_TOKEN;
 
 function isAddress(value) {
@@ -34,14 +35,25 @@ function integer(value) {
   return Number.isFinite(n) ? n.toLocaleString() : '—';
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 function badge(id, text, type) {
   const el = $(id);
+  if (!el) return;
   el.textContent = text;
   el.className = `badge ${type}`;
 }
 
 function compare(id, text, type) {
   const el = $(id);
+  if (!el) return;
   el.textContent = text;
   el.className = `compare-status ${type}`;
 }
@@ -64,6 +76,7 @@ async function copy(text, label = 'COPIED') {
 
 function setLink(id, href) {
   const el = $(id);
+  if (!el) return;
   if (!href) {
     el.href = '#';
     el.classList.add('disabled');
@@ -92,7 +105,15 @@ async function fetchJson(url) {
   }
 }
 
+function resetMarkets() {
+  if ($('marketsStatus')) $('marketsStatus').textContent = 'WAITING';
+  if ($('marketsCount')) $('marketsCount').textContent = '—';
+  if ($('activeMarket')) $('activeMarket').textContent = 'Waiting for market discovery…';
+  if ($('marketsGrid')) $('marketsGrid').innerHTML = '<div class="markets-empty">Waiting for DexScreener and ArcPad market data…</div>';
+}
+
 function reset(token) {
+  activeContext = null;
   $('errorBox').hidden = true;
   $('errorBox').textContent = '';
   $('tokenTitle').textContent = 'CHECKING THE EXIT...';
@@ -131,6 +152,7 @@ function reset(token) {
   $('summaryHeadline').textContent = 'Running checks';
   $('summaryCopy').textContent = 'Waiting for live sources to respond.';
   $('exitFomoNote').hidden = token.toLowerCase() !== EXIT_TOKEN.toLowerCase();
+  resetMarkets();
 
   setLink('arcPadLink', `${ARCPAD_BASE}/token/${token}`);
   setLink('dexLink', null);
@@ -165,6 +187,7 @@ function extractTokenRows(data) {
   if (Array.isArray(data?.items)) return data.items;
   if (Array.isArray(data?.data)) return data.data;
   if (Array.isArray(data?.results)) return data.results;
+  if (Array.isArray(data?.creations)) return data.creations;
   return [];
 }
 
@@ -220,9 +243,14 @@ async function getDex(token) {
     const result = await fetchJson(`${DEX_TOKEN_API}${token}`);
     if (!result.ok) throw new Error(`DexScreener HTTP ${result.status}`);
     const allPairs = Array.isArray(result.data?.pairs) ? result.data.pairs : [];
+    const seen = new Set();
     const arcPairs = allPairs.filter((pair) => {
       const chain = String(pair?.chainId || '').toLowerCase();
-      return chain === 'arc' || chain === 'arc-mainnet' || chain.startsWith('arc-');
+      if (!(chain === 'arc' || chain === 'arc-mainnet' || chain.startsWith('arc-'))) return false;
+      const address = String(pair?.pairAddress || '').toLowerCase();
+      if (!address || seen.has(address)) return false;
+      seen.add(address);
+      return true;
     });
     if (!arcPairs.length) return { found: false };
     arcPairs.sort((a, b) => Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0));
@@ -259,6 +287,7 @@ function renderArcPad(result) {
 
 function renderDex(result) {
   if (!result.found) {
+    badge('dexPadBadge', result.error ? 'UNAVAILABLE' : 'NOT FOUND', result.error ? 'warn' : 'bad');
     badge('dexBadge', result.error ? 'UNAVAILABLE' : 'NOT FOUND', result.error ? 'warn' : 'bad');
     $('dexHeadline').textContent = result.error ? 'DexScreener check incomplete' : 'No Arc pair indexed';
     $('dexCopy').textContent = result.error
@@ -271,21 +300,48 @@ function renderDex(result) {
   const p = result.pair;
   const buys = Number(p?.txns?.h24?.buys || 0);
   const sells = Number(p?.txns?.h24?.sells || 0);
-  badge('dexBadge', 'INDEXED', 'ok');
-  $('dexHeadline').textContent = `${p?.baseToken?.symbol || 'TOKEN'} / ${p?.quoteToken?.symbol || 'PAIR'}`;
-  $('dexCopy').textContent = `${p?.dexId ? p.dexId.toUpperCase() : 'DEX'} market indexed with live market data.`;
+  badge('dexBadge', result.pairs.length > 1 ? `${result.pairs.length} MARKETS` : 'INDEXED', 'ok');
+  $('dexHeadline').textContent = result.pairs.length > 1
+    ? `${result.pairs.length} Arc markets discovered`
+    : `${p?.baseToken?.symbol || 'TOKEN'} / ${p?.quoteToken?.symbol || 'PAIR'}`;
+  $('dexCopy').textContent = result.pairs.length > 1
+    ? 'The metrics below are from the strongest market by DexScreener-reported liquidity. See Market Discovery to inspect each pool.'
+    : `${p?.dexId ? p.dexId.toUpperCase() : 'DEX'} market indexed with live market data.`;
   $('dexLiquidity').textContent = money(p?.liquidity?.usd, 0);
   $('dexVolume').textContent = money(p?.volume?.h24, 0);
   $('dexMcap').textContent = money(p?.marketCap ?? p?.fdv, 0);
   $('dexTxns').textContent = integer(buys + sells);
-  $('terminalDex').textContent = 'INDEXED';
-  compare('compareDex', 'INDEXED', 'ok-text');
+  $('terminalDex').textContent = result.pairs.length > 1 ? `${result.pairs.length} MARKETS` : 'INDEXED';
+  compare('compareDex', result.pairs.length > 1 ? `${result.pairs.length} MARKETS` : 'INDEXED', 'ok-text');
   setLink('dexLink', p?.url || null);
   return p;
 }
 
-function renderPool(arcPadMeta, dexPair, arcPadResult, dexResult) {
-  const pool = arcPadMeta?.pool || dexPair?.pairAddress || null;
+function pairAddress(pair) {
+  return String(pair?.pairAddress || '').toLowerCase();
+}
+
+function chooseDefaultMarket(arcPadMeta, dexResult) {
+  const pairs = dexResult?.pairs || [];
+  const requested = new URLSearchParams(location.search).get('pool')?.toLowerCase();
+  if (requested) {
+    const requestedPair = pairs.find((pair) => pairAddress(pair) === requested);
+    if (requestedPair) return { pool: requestedPair.pairAddress, pair: requestedPair, reason: 'shared selection' };
+    if (arcPadMeta?.pool?.toLowerCase() === requested) return { pool: arcPadMeta.pool, pair: null, reason: 'shared ArcPad launch pool' };
+  }
+
+  if (arcPadMeta?.pool) {
+    const launchPair = pairs.find((pair) => pairAddress(pair) === arcPadMeta.pool.toLowerCase());
+    return { pool: arcPadMeta.pool, pair: launchPair || null, reason: 'ArcPad launch pool' };
+  }
+
+  if (dexResult?.pair?.pairAddress) {
+    return { pool: dexResult.pair.pairAddress, pair: dexResult.pair, reason: 'strongest reported market' };
+  }
+  return { pool: null, pair: null, reason: 'unresolved' };
+}
+
+function renderPool(pool, pair, reason, arcPadResult, dexResult) {
   if (!pool) {
     const incomplete = Boolean(arcPadResult?.error || dexResult?.error);
     badge('poolBadge', incomplete ? 'UNRESOLVED' : 'NOT FOUND', incomplete ? 'warn' : 'bad');
@@ -293,19 +349,77 @@ function renderPool(arcPadMeta, dexPair, arcPadResult, dexResult) {
     $('poolCopy').textContent = incomplete
       ? 'At least one upstream source was unavailable, so the monitor cannot safely conclude that no pool exists.'
       : 'The checked sources responded but neither returned an Arc pool address.';
+    $('poolAddress').textContent = '—';
+    $('copyPool').disabled = true;
+    $('copyPool').dataset.pool = '';
     $('terminalPool').textContent = incomplete ? 'UNRESOLVED' : 'NOT FOUND';
-    return null;
+    return;
   }
-  badge('poolBadge', 'POOL FOUND', 'ok');
-  $('poolHeadline').textContent = 'Market pool resolved';
-  $('poolCopy').textContent = arcPadMeta?.pool && dexPair?.pairAddress && arcPadMeta.pool.toLowerCase() === dexPair.pairAddress.toLowerCase()
-    ? 'ArcPad and DexScreener agree on the same pool address.'
-    : 'A market pool address was returned by at least one live source.';
+  badge('poolBadge', 'ANALYZING', 'ok');
+  $('poolHeadline').textContent = pair
+    ? `${pair?.baseToken?.symbol || 'TOKEN'} / ${pair?.quoteToken?.symbol || 'PAIR'}`
+    : 'ArcPad launch pool';
+  $('poolCopy').textContent = `Currently analyzing ${reason}. Market Discovery below lets you switch pools when multiple markets exist.`;
   $('poolAddress').textContent = pool;
   $('copyPool').disabled = false;
   $('copyPool').dataset.pool = pool;
-  $('terminalPool').textContent = 'POOL FOUND';
-  return pool;
+  $('terminalPool').textContent = 'ANALYZING';
+}
+
+function marketCard(pair, launchPool, topPool, activePool) {
+  const address = pair?.pairAddress || '';
+  const lower = address.toLowerCase();
+  const isLaunch = Boolean(launchPool && lower === launchPool.toLowerCase());
+  const isTop = Boolean(topPool && lower === topPool.toLowerCase());
+  const isActive = Boolean(activePool && lower === activePool.toLowerCase());
+  const buys = Number(pair?.txns?.h24?.buys || 0);
+  const sells = Number(pair?.txns?.h24?.sells || 0);
+  const tags = [
+    isLaunch ? '<span class="market-tag launch">ARCPAD LAUNCH</span>' : '',
+    isTop ? '<span class="market-tag top">TOP REPORTED</span>' : '',
+    isActive ? '<span class="market-tag active">ANALYZING</span>' : ''
+  ].join('');
+
+  return `<article class="market-card${isActive ? ' active' : ''}" data-market="${escapeHtml(address)}">
+    <div class="market-card-top">
+      <div><strong class="market-pair">${escapeHtml(pair?.baseToken?.symbol || 'TOKEN')} / ${escapeHtml(pair?.quoteToken?.symbol || 'PAIR')}</strong><span class="market-dex">${escapeHtml(String(pair?.dexId || 'DEX').toUpperCase())}</span></div>
+      <div class="market-tags">${tags}</div>
+    </div>
+    <code class="market-address">${escapeHtml(address)}</code>
+    <div class="market-metrics">
+      <div><span>Reported liquidity</span><strong>${money(pair?.liquidity?.usd, 0)}</strong></div>
+      <div><span>24h volume</span><strong>${money(pair?.volume?.h24, 0)}</strong></div>
+      <div><span>24h txns</span><strong>${integer(buys + sells)}</strong></div>
+    </div>
+    <div class="market-actions">
+      <button class="market-analyze" type="button" data-analyze-pool="${escapeHtml(address)}">${isActive ? 'ANALYZING' : 'ANALYZE THIS POOL'}</button>
+      ${pair?.url ? `<a class="market-link" href="${escapeHtml(pair.url)}" target="_blank" rel="noopener noreferrer">DEXSCREENER ↗</a>` : ''}
+    </div>
+  </article>`;
+}
+
+function renderMarkets(context) {
+  const { arcPadMeta, dexResult, activePool } = context;
+  const pairs = dexResult?.pairs || [];
+  const launchPool = arcPadMeta?.pool || null;
+  const topPool = dexResult?.pair?.pairAddress || null;
+  const launchIndexed = launchPool ? pairs.some((pair) => pairAddress(pair) === launchPool.toLowerCase()) : false;
+  const totalKnown = pairs.length + (launchPool && !launchIndexed ? 1 : 0);
+
+  $('marketsStatus').textContent = totalKnown ? 'LIVE' : 'NO MARKETS';
+  $('marketsCount').textContent = `${totalKnown} ${totalKnown === 1 ? 'POOL' : 'POOLS'}`;
+  $('activeMarket').textContent = activePool || 'No pool selected';
+
+  const cards = pairs.map((pair) => marketCard(pair, launchPool, topPool, activePool));
+  if (launchPool && !launchIndexed) {
+    const active = launchPool.toLowerCase() === activePool?.toLowerCase();
+    cards.unshift(`<article class="market-card${active ? ' active' : ''}" data-market="${escapeHtml(launchPool)}">
+      <div class="market-card-top"><div><strong class="market-pair">ArcPad launch pool</strong><span class="market-dex">NOT CURRENTLY INDEXED BY DEXSCREENER</span></div><div class="market-tags"><span class="market-tag launch">ARCPAD LAUNCH</span>${active ? '<span class="market-tag active">ANALYZING</span>' : ''}</div></div>
+      <code class="market-address">${escapeHtml(launchPool)}</code>
+      <div class="market-actions"><button class="market-analyze" type="button" data-analyze-pool="${escapeHtml(launchPool)}">${active ? 'ANALYZING' : 'ANALYZE THIS POOL'}</button></div>
+    </article>`);
+  }
+  $('marketsGrid').innerHTML = cards.length ? cards.join('') : '<div class="markets-empty">No Arc market pool was resolved from the available sources.</div>';
 }
 
 function summarize(token, arcPad, dex, pool) {
@@ -314,7 +428,9 @@ function summarize(token, arcPad, dex, pool) {
   if (liveCount === 2 && pool) {
     badge('summaryBadge', 'PROPAGATED', 'ok');
     $('summaryHeadline').textContent = 'Launch data is propagating';
-    $('summaryCopy').textContent = 'ArcPad and DexScreener both currently recognize this token, with a market pool resolved.';
+    $('summaryCopy').textContent = dex?.pairs?.length > 1
+      ? `${dex.pairs.length} Arc markets are indexed. The monitor can inspect each pool separately.`
+      : 'ArcPad and DexScreener both currently recognize this token, with a market pool resolved.';
     $('terminalStatus').textContent = 'PROPAGATED_';
     $('tokenTitle').textContent = arcPad?.meta ? `${arcPad.meta.name} // ${arcPad.meta.symbol}` : 'TOKEN FOUND';
   } else if (liveCount >= 1) {
@@ -340,6 +456,44 @@ function summarize(token, arcPad, dex, pool) {
   }
 }
 
+function dispatchAnalysis(context, pool, pair, reason, updateUrl = true) {
+  context.activePool = pool;
+  context.activePair = pair || null;
+  context.reason = reason;
+  activeContext = context;
+
+  if (updateUrl) {
+    const params = new URLSearchParams(location.search);
+    params.set('token', context.token);
+    if (pool) params.set('pool', pool); else params.delete('pool');
+    history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+  }
+
+  renderPool(pool, pair, reason, context.arcPadResult, context.dexResult);
+  renderMarkets(context);
+  window.dispatchEvent(new CustomEvent('arc-monitor-result', {
+    detail: {
+      token: context.token,
+      pool,
+      arcPadMeta: context.arcPadMeta,
+      dexPair: pair,
+      dexPairs: context.dexResult?.pairs || [],
+      selectionReason: reason
+    }
+  }));
+}
+
+function selectMarket(poolAddress) {
+  if (!activeContext || !poolAddress) return;
+  const requested = poolAddress.toLowerCase();
+  const pair = (activeContext.dexResult?.pairs || []).find((item) => pairAddress(item) === requested) || null;
+  const launch = activeContext.arcPadMeta?.pool?.toLowerCase() === requested;
+  if (!pair && !launch) return;
+  const reason = launch ? 'ArcPad launch pool' : 'selected DexScreener market';
+  dispatchAnalysis(activeContext, poolAddress, pair, reason, true);
+  $('onchain')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 async function run(token) {
   token = token.trim();
   if (!isAddress(token)) {
@@ -357,22 +511,34 @@ async function run(token) {
 
   const [arcPadResult, dexResult] = await Promise.all([getArcPad(token), getDex(token)]);
   const arcPadMeta = renderArcPad(arcPadResult);
-  const dexPair = renderDex(dexResult);
-  const pool = renderPool(arcPadMeta, dexPair, arcPadResult, dexResult);
-  summarize(token, arcPadResult, dexResult, pool);
+  renderDex(dexResult);
+  const choice = chooseDefaultMarket(arcPadMeta, dexResult);
+  const context = { token, arcPadResult, dexResult, arcPadMeta, activePool: choice.pool, activePair: choice.pair, reason: choice.reason };
+  summarize(token, arcPadResult, dexResult, choice.pool);
   $('lastChecked').textContent = new Date().toLocaleString(undefined, { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric' }).toUpperCase();
-
-  window.dispatchEvent(new CustomEvent('arc-monitor-result', {
-    detail: { token, pool, arcPadMeta, dexPair }
-  }));
+  dispatchAnalysis(context, choice.pool, choice.pair, choice.reason, false);
 }
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+  const params = new URLSearchParams(location.search);
+  params.delete('pool');
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
   run(input.value);
 });
 
-$('loadExit').addEventListener('click', () => run(EXIT_TOKEN));
+$('marketsGrid')?.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-analyze-pool]');
+  if (!button) return;
+  selectMarket(button.dataset.analyzePool);
+});
+
+$('loadExit').addEventListener('click', () => {
+  const params = new URLSearchParams(location.search);
+  params.delete('pool');
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+  run(EXIT_TOKEN);
+});
 $('copyMonitorLink').addEventListener('click', () => copy(location.href, 'MONITOR LINK COPIED'));
 $('copyToken').addEventListener('click', () => copy(input.value.trim(), 'TOKEN ADDRESS COPIED'));
 $('copyPool').addEventListener('click', () => {
