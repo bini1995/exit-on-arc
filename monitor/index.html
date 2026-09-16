@@ -13,6 +13,7 @@
   <title>Arc Launch Monitor | Exit on Arc</title>
   <link rel="icon" href="../logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="monitor.css" />
+  <link rel="stylesheet" href="markets.css" />
   <link rel="stylesheet" href="onchain.css" />
   <link rel="stylesheet" href="depth.css" />
 </head>
@@ -76,7 +77,7 @@
     </section>
 
     <section class="strip" aria-label="Monitor capabilities">
-      <div>LIVE ARCPAD METADATA <i>◆</i> LIVE DEXSCREENER MARKET DATA <i>◆</i> LIVE ARC RPC POOL READS <i>◆</i> SELL-SIDE DEPTH ESTIMATES <i>◆</i> NO WALLET REQUIRED <i>◆</i> READ ONLY <i>◆</i></div>
+      <div>LIVE ARCPAD METADATA <i>◆</i> MULTI-POOL DISCOVERY <i>◆</i> LIVE ARC RPC POOL READS <i>◆</i> SELL-SIDE DEPTH ESTIMATES <i>◆</i> NO WALLET REQUIRED <i>◆</i> READ ONLY <i>◆</i></div>
     </section>
 
     <section class="section shell" id="results">
@@ -173,10 +174,40 @@
       </div>
     </section>
 
+    <section class="section shell markets-section" id="markets">
+      <div class="section-head">
+        <div>
+          <div class="kicker">02 // MARKET DISCOVERY</div>
+          <h2>ONE TOKEN.<br /><span>EVERY ARC MARKET.</span></h2>
+        </div>
+        <div class="markets-state">
+          <span>DISCOVERY STATUS</span>
+          <strong id="marketsStatus">WAITING</strong>
+          <span style="margin-top:8px">KNOWN MARKETS</span>
+          <strong id="marketsCount">—</strong>
+        </div>
+      </div>
+
+      <div class="markets-intro">
+        <p>DexScreener can return more than one Arc pool for the same token. The monitor now keeps those markets separate instead of silently treating the largest reported-liquidity pair as the whole market.</p>
+        <p><strong>ArcPad launch</strong> identifies the launch pool when available. <strong>Top reported</strong> means the largest DexScreener-reported liquidity figure — not necessarily the best executable depth.</p>
+      </div>
+
+      <div class="markets-current">
+        <div class="markets-current-mark">◎</div>
+        <div><span>Currently analyzing</span><strong id="activeMarket">Waiting for market discovery…</strong></div>
+      </div>
+
+      <div id="marketsGrid" class="markets-grid">
+        <div class="markets-empty">Waiting for DexScreener and ArcPad market data…</div>
+      </div>
+      <p class="markets-note">Select a pool to rerun the direct Arc RPC composition and sell-side depth analysis against that specific market. The selected pool is also added to the shareable URL.</p>
+    </section>
+
     <section class="section shell onchain-section" id="onchain">
       <div class="section-head">
         <div>
-          <div class="kicker">02 // ONCHAIN POOL COMPOSITION</div>
+          <div class="kicker">03 // ONCHAIN POOL COMPOSITION</div>
           <h2>WHAT'S ACTUALLY<br /><span>IN THE POOL?</span></h2>
         </div>
         <div class="onchain-state">
@@ -245,7 +276,7 @@
     <section class="section shell depth-section" id="depth">
       <div class="section-head">
         <div>
-          <div class="kicker">03 // SELL-SIDE DEPTH ESTIMATOR</div>
+          <div class="kicker">04 // SELL-SIDE DEPTH ESTIMATOR</div>
           <h2>HOW THIN IS<br /><span>THE EXIT?</span></h2>
         </div>
         <div class="depth-state">
@@ -300,7 +331,7 @@
     </section>
 
     <section class="section shell compare-section">
-      <div class="kicker">04 // INDEXER COMPARISON</div>
+      <div class="kicker">05 // INDEXER COMPARISON</div>
       <div class="compare-intro">
         <h2>SAME TOKEN.<br /><span>DIFFERENT INDEXERS.</span></h2>
         <p>New-chain markets can be live before every wallet, indexer and discovery platform interprets them consistently. This view makes those differences visible without pretending every source exposes the same data.</p>
@@ -327,7 +358,7 @@
     </section>
 
     <section class="section shell about-section">
-      <div class="kicker">05 // WHY THIS EXISTS</div>
+      <div class="kicker">06 // WHY THIS EXISTS</div>
       <div class="about-grid">
         <h2>BUILT FROM A<br />REAL MAINNET<br /><span>EDGE CASE.</span></h2>
         <div>
