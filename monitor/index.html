@@ -4,15 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#050706" />
-  <meta name="description" content="Arc Launch Monitor compares how newly launched Arc assets appear across ArcPad, Uniswap V3, DexScreener and discovery tooling." />
+  <meta name="description" content="Arc Launch Monitor compares ArcPad and DexScreener indexing with live onchain Uniswap V3 pool composition on Arc." />
   <meta property="og:title" content="Arc Launch Monitor | Exit on Arc" />
-  <meta property="og:description" content="Track how a token propagates across the Arc ecosystem." />
+  <meta property="og:description" content="Track how an Arc token propagates across indexers and inspect its live onchain pool composition." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://exitonarc.xyz/monitor/" />
   <meta name="twitter:card" content="summary" />
   <title>Arc Launch Monitor | Exit on Arc</title>
   <link rel="icon" href="../logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="monitor.css" />
+  <link rel="stylesheet" href="onchain.css" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -37,7 +38,7 @@
       <div class="hero-copy">
         <div class="eyebrow"><span class="status-dot"></span> OPEN-SOURCE ARC TOOLING EXPERIMENT</div>
         <h1>ARC LAUNCH<br /><span>MONITOR</span></h1>
-        <p class="lede">Track how a token propagates across the Arc ecosystem — from launch metadata to liquidity and market-data indexing.</p>
+        <p class="lede">Track how a token propagates across the Arc ecosystem — then compare headline market data with the pool's live onchain composition.</p>
 
         <form id="tokenForm" class="lookup" novalidate>
           <label for="tokenInput">ARC TOKEN CONTRACT</label>
@@ -45,13 +46,13 @@
             <input id="tokenInput" name="token" autocomplete="off" spellcheck="false" aria-describedby="inputHelp" />
             <button type="submit">CHECK TOKEN <span>↗</span></button>
           </div>
-          <p id="inputHelp">Paste any 0x token contract. ArcPad + DexScreener are checked live in your browser.</p>
+          <p id="inputHelp">Paste any 0x token contract. ArcPad + DexScreener + read-only Arc RPC checks run in your browser.</p>
         </form>
 
         <div class="quick-actions">
           <button id="loadExit" type="button">LOAD $EXIT DEMO</button>
           <button id="copyMonitorLink" type="button">COPY MONITOR LINK</button>
-          <a id="arcscanLink" href="https://arcscan.app" target="_blank" rel="noopener noreferrer">OPEN ARCSCAN ↗</a>
+          <a id="arcscanLink" href="https://explorer.arc.io" target="_blank" rel="noopener noreferrer">OPEN ARC EXPLORER ↗</a>
         </div>
       </div>
 
@@ -65,6 +66,7 @@
           <p><em>&gt;</em> token <strong id="terminalToken">WAITING...</strong></p>
           <p><em>&gt;</em> arcpad <strong id="terminalArcPad">PENDING</strong></p>
           <p><em>&gt;</em> uniswap_v3 <strong id="terminalPool">PENDING</strong></p>
+          <p><em>&gt;</em> onchain_pool <strong id="terminalOnchain">PENDING</strong></p>
           <p><em>&gt;</em> dexscreener <strong id="terminalDex">PENDING</strong></p>
           <p><em>&gt;</em> fomo <strong>MANUAL CHECK</strong></p>
           <p class="terminal-ready"><em>&gt;</em> status <strong id="terminalStatus">READY_</strong></p>
@@ -73,7 +75,7 @@
     </section>
 
     <section class="strip" aria-label="Monitor capabilities">
-      <div>LIVE ARCPAD METADATA <i>◆</i> LIVE DEXSCREENER MARKET DATA <i>◆</i> ARC // 5042 <i>◆</i> NO WALLET REQUIRED <i>◆</i> NO BACKEND <i>◆</i></div>
+      <div>LIVE ARCPAD METADATA <i>◆</i> LIVE DEXSCREENER MARKET DATA <i>◆</i> LIVE ARC RPC POOL READS <i>◆</i> ARC // 5042 <i>◆</i> NO WALLET REQUIRED <i>◆</i> READ ONLY <i>◆</i></div>
     </section>
 
     <section class="section shell" id="results">
@@ -99,7 +101,7 @@
           <strong>CHAIN 5042</strong>
           <p>Monitor target: Arc public mainnet.</p>
           <div class="detail"><span>Contract</span><code id="arcContract">—</code></div>
-          <a id="arcCardLink" class="card-link" href="https://arcscan.app" target="_blank" rel="noopener noreferrer">VIEW ON ARCSCAN ↗</a>
+          <a id="arcCardLink" class="card-link" href="https://explorer.arc.io" target="_blank" rel="noopener noreferrer">VIEW ON ARC EXPLORER ↗</a>
         </article>
 
         <article class="status-card" id="arcPadCard">
@@ -108,7 +110,7 @@
             <span id="arcPadBadge" class="badge loading">CHECKING</span>
           </div>
           <strong id="arcPadHeadline">Looking for launch metadata</strong>
-          <p id="arcPadCopy">Querying ArcPad's public, CORS-open developer API.</p>
+          <p id="arcPadCopy">Querying ArcPad's public developer API.</p>
           <div class="detail"><span>Pool</span><code id="arcPadPool">—</code></div>
           <div class="metrics compact">
             <div><span>Price</span><strong id="arcPadPrice">—</strong></div>
@@ -134,9 +136,9 @@
             <span id="dexBadge" class="badge loading">CHECKING</span>
           </div>
           <strong id="dexHeadline">Searching indexed pairs</strong>
-          <p id="dexCopy">Querying DexScreener's public market-data API.</p>
+          <p id="dexCopy">Querying DexScreener's public market-data API. Its liquidity figure is shown as reported market liquidity, not guaranteed sell-side capacity.</p>
           <div class="metrics">
-            <div><span>Liquidity</span><strong id="dexLiquidity">—</strong></div>
+            <div><span>Reported liquidity</span><strong id="dexLiquidity">—</strong></div>
             <div><span>24h volume</span><strong id="dexVolume">—</strong></div>
             <div><span>Market cap</span><strong id="dexMcap">—</strong></div>
             <div><span>24h txns</span><strong id="dexTxns">—</strong></div>
@@ -152,7 +154,7 @@
           <strong>External status check</strong>
           <p id="fomoCopy">Fomo does not currently expose an integration endpoint used by this monitor. Open Fomo and search the contract directly.</p>
           <div id="exitFomoNote" class="notice" hidden>
-            $EXIT note: token indexing was observed on Sep 16, 2026; trading availability was under support review after a liquidity-detection discrepancy.
+            $EXIT note: Fomo support reported a liquidity discrepancy on Sep 16, 2026. Compare that reading with the live onchain pool composition below.
           </div>
           <a class="card-link" href="https://fomo.family" target="_blank" rel="noopener noreferrer">OPEN FOMO ↗</a>
         </article>
@@ -170,8 +172,77 @@
       </div>
     </section>
 
+    <section class="section shell onchain-section" id="onchain">
+      <div class="section-head">
+        <div>
+          <div class="kicker">02 // ONCHAIN POOL COMPOSITION</div>
+          <h2>WHAT'S ACTUALLY<br /><span>IN THE POOL?</span></h2>
+        </div>
+        <div class="onchain-state">
+          <span>ARC RPC</span>
+          <strong id="onchainStatus">WAITING</strong>
+        </div>
+      </div>
+
+      <div id="onchainError" class="error-box" hidden></div>
+
+      <div class="onchain-grid">
+        <article class="chain-panel pool-identity">
+          <div class="panel-top"><span>POOL IDENTITY</span><b id="onchainBadge" class="mini-badge loading">CHECKING</b></div>
+          <div class="chain-row"><span>Pool</span><code id="chainPool">—</code></div>
+          <div class="chain-row"><span>Token 0</span><code id="chainToken0">—</code></div>
+          <div class="chain-row"><span>Token 1</span><code id="chainToken1">—</code></div>
+          <a id="poolExplorerLink" class="chain-link disabled" href="#">VIEW POOL ON ARC EXPLORER ↗</a>
+        </article>
+
+        <article class="chain-panel">
+          <div class="panel-top"><span>V3 STATE</span><b class="mini-badge neutral">READ ONLY</b></div>
+          <div class="big-metrics">
+            <div><span>Fee tier</span><strong id="chainFee">—</strong></div>
+            <div><span>Current tick</span><strong id="chainTick">—</strong></div>
+            <div class="wide"><span>Active liquidity (L)</span><strong id="chainActiveLiquidity">—</strong></div>
+          </div>
+          <p class="chain-help">Active liquidity is Uniswap V3's liquidity parameter at the current tick. It is not a dollar value.</p>
+        </article>
+
+        <article class="chain-panel reserve-panel">
+          <div class="panel-top"><span>LIVE CONTRACT BALANCES</span><b class="mini-badge neutral">BALANCEOF</b></div>
+          <div class="reserve-list">
+            <div>
+              <span id="reserve0Label">TOKEN 0 RESERVE</span>
+              <strong id="reserve0">—</strong>
+            </div>
+            <div>
+              <span id="reserve1Label">TOKEN 1 RESERVE</span>
+              <strong id="reserve1">—</strong>
+            </div>
+          </div>
+          <p class="chain-help">These are the tokens physically held by the pool contract at the time of this check.</p>
+        </article>
+
+        <article class="chain-panel comparison-panel">
+          <div class="panel-top"><span>LIQUIDITY REALITY CHECK</span><b id="compositionBadge" class="mini-badge loading">CHECKING</b></div>
+          <div class="reality-grid">
+            <div><span>DexScreener reported</span><strong id="reportedLiquidity">—</strong></div>
+            <div><span>USDC held by pool</span><strong id="usdcReserve">—</strong></div>
+            <div><span>USDC share by est. value</span><strong id="usdcShare">—</strong></div>
+            <div><span>Onchain token price</span><strong id="chainPrice">—</strong></div>
+          </div>
+          <div id="compositionWarning" class="composition-warning">Waiting for onchain pool data.</div>
+        </article>
+      </div>
+
+      <div class="liquidity-explainer">
+        <div class="explainer-mark">!</div>
+        <div>
+          <strong>HEADLINE LIQUIDITY ≠ IMMEDIATELY AVAILABLE QUOTE ASSET</strong>
+          <p>Concentrated-liquidity pools can be heavily one-sided. A market-data service may value the token inventory and report a larger liquidity number while the pool holds much less USDC at that moment. The USDC balance shown here is a live onchain reserve, but it is still not a guaranteed executable sell amount: the active tick range, fees, slippage and routing also matter.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="section shell compare-section">
-      <div class="kicker">02 // INDEXER COMPARISON</div>
+      <div class="kicker">03 // INDEXER COMPARISON</div>
       <div class="compare-intro">
         <h2>SAME TOKEN.<br /><span>DIFFERENT INDEXERS.</span></h2>
         <p>New-chain markets can be live before every wallet, indexer and discovery platform interprets them consistently. This view makes those differences visible without pretending every source exposes the same data.</p>
@@ -181,6 +252,10 @@
         <div class="compare-row">
           <div><strong>ArcPad</strong><span>Launch metadata + Arc-native market source</span></div>
           <b id="compareArcPad" class="compare-status loading-text">CHECKING...</b>
+        </div>
+        <div class="compare-row">
+          <div><strong>Arc RPC</strong><span>Direct read-only pool state and contract balances</span></div>
+          <b id="compareOnchain" class="compare-status loading-text">CHECKING...</b>
         </div>
         <div class="compare-row">
           <div><strong>DexScreener</strong><span>Independent pair + market-data indexer</span></div>
@@ -194,13 +269,13 @@
     </section>
 
     <section class="section shell about-section">
-      <div class="kicker">03 // WHY THIS EXISTS</div>
+      <div class="kicker">04 // WHY THIS EXISTS</div>
       <div class="about-grid">
         <h2>BUILT FROM A<br />REAL MAINNET<br /><span>EDGE CASE.</span></h2>
         <div>
-          <p>Arc Launch Monitor started after one newly launched Arc token appeared with live Uniswap V3 liquidity on one market-data service while another discovery platform initially interpreted the same locked position differently.</p>
-          <p>The goal is simple: give Arc builders one lightweight place to compare what public ecosystem tools currently know about a token.</p>
-          <p class="muted">V1 intentionally uses public read-only APIs and requires no wallet connection. Results are informational and may lag the underlying chain.</p>
+          <p>Arc Launch Monitor started after a newly launched Arc token showed roughly $2.9K of headline liquidity on one market-data service while another platform found only about $9. Direct onchain reads showed why: the concentrated V3 pool was overwhelmingly token inventory with only about $9 of USDC held at that moment.</p>
+          <p>The goal is simple: give Arc builders one lightweight place to compare what public ecosystem tools report with what the pool contracts actually hold.</p>
+          <p class="muted">The monitor uses public read-only APIs and JSON-RPC calls. No wallet connection or transaction signing is required. Results are informational snapshots and may change immediately after a check.</p>
           <a class="source-link" href="https://github.com/bini1995/exit-on-arc" target="_blank" rel="noopener noreferrer">VIEW SOURCE ON GITHUB ↗</a>
         </div>
       </div>
@@ -209,11 +284,12 @@
 
   <footer class="footer shell">
     <div class="footer-brand"><img src="../logo.svg" alt="" /><strong>ARC LAUNCH MONITOR</strong></div>
-    <p>Independent open-source ecosystem experiment. Not affiliated with or endorsed by Arc, Circle, ArcPad, Uniswap, DexScreener, or Fomo. Market data can be delayed or incomplete. Nothing on this page is financial advice.</p>
+    <p>Independent open-source ecosystem experiment. Not affiliated with or endorsed by Arc, Circle, ArcPad, Uniswap, DexScreener, or Fomo. Market and onchain data can be delayed, incomplete, or interpreted differently across services. Nothing on this page is financial advice.</p>
     <div class="footer-bottom"><span>© 2026 EXIT LIQUIDITY</span><a href="../">BACK TO EXITONARC.XYZ ↗</a></div>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite">COPIED</div>
   <script src="monitor.js"></script>
+  <script src="onchain.js"></script>
 </body>
 </html>
