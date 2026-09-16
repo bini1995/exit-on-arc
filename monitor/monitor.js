@@ -85,11 +85,7 @@ async function fetchJson(url) {
       signal: controller.signal,
     });
     let data = null;
-    try {
-      data = await response.json();
-    } catch {
-      data = null;
-    }
+    try { data = await response.json(); } catch { data = null; }
     return { ok: response.ok, status: response.status, data };
   } finally {
     clearTimeout(timer);
@@ -107,6 +103,7 @@ function reset(token) {
   $('terminalArcPad').textContent = 'CHECKING';
   $('terminalPool').textContent = 'CHECKING';
   $('terminalDex').textContent = 'CHECKING';
+  if ($('terminalOnchain')) $('terminalOnchain').textContent = 'WAITING';
   $('terminalStatus').textContent = 'RUNNING_';
   badge('arcPadBadge', 'CHECKING', 'loading');
   badge('poolBadge', 'CHECKING', 'loading');
@@ -114,6 +111,7 @@ function reset(token) {
   badge('summaryBadge', 'CHECKING', 'loading');
   compare('compareArcPad', 'CHECKING...', 'loading-text');
   compare('compareDex', 'CHECKING...', 'loading-text');
+  if ($('compareOnchain')) compare('compareOnchain', 'WAITING...', 'loading-text');
   $('arcPadHeadline').textContent = 'Looking for launch metadata';
   $('arcPadCopy').textContent = "Querying ArcPad's public developer API.";
   $('arcPadPool').textContent = '—';
@@ -134,13 +132,14 @@ function reset(token) {
   $('summaryCopy').textContent = 'Waiting for live sources to respond.';
   $('exitFomoNote').hidden = token.toLowerCase() !== EXIT_TOKEN.toLowerCase();
 
-  // ArcPad's token page is still useful for a manual check even if its API is temporarily unavailable.
   setLink('arcPadLink', `${ARCPAD_BASE}/token/${token}`);
   setLink('dexLink', null);
 
-  const explorer = `https://arcscan.app/address/${token}`;
+  const explorer = `https://explorer.arc.io/address/${token}`;
   $('arcscanLink').href = explorer;
   $('arcCardLink').href = explorer;
+
+  window.dispatchEvent(new CustomEvent('arc-monitor-reset', { detail: { token } }));
 }
 
 function normalizeArcPadMeta(value) {
@@ -179,8 +178,6 @@ async function getArcPad(token) {
   let successfulRead = false;
   let transientError = null;
 
-  // First try ArcPad's documented per-token metadata endpoint. The lowercase retry
-  // protects against index/database layers that normalize addresses differently.
   for (const address of addressVariants) {
     try {
       const result = await fetchJson(`${ARCPAD_BASE}/api/token/${address}/meta`);
@@ -198,8 +195,6 @@ async function getArcPad(token) {
     }
   }
 
-  // Fallback to ArcPad's documented token-list search. This helps when an individual
-  // metadata route is briefly out of sync with ArcPad's indexer/search layer.
   try {
     const result = await fetchJson(`${ARCPAD_BASE}/api/tokens?limit=50&q=${encodeURIComponent(token)}`);
     if (result.ok) {
@@ -216,8 +211,6 @@ async function getArcPad(token) {
     transientError = error;
   }
 
-  // Only say NOT FOUND if at least one ArcPad request completed successfully.
-  // If every useful read failed, report UNAVAILABLE so we do not create a false negative.
   if (successfulRead) return { found: false, error: null };
   return { found: false, error: transientError || new Error('ArcPad request failed') };
 }
@@ -226,14 +219,11 @@ async function getDex(token) {
   try {
     const result = await fetchJson(`${DEX_TOKEN_API}${token}`);
     if (!result.ok) throw new Error(`DexScreener HTTP ${result.status}`);
-
     const allPairs = Array.isArray(result.data?.pairs) ? result.data.pairs : [];
     const arcPairs = allPairs.filter((pair) => {
       const chain = String(pair?.chainId || '').toLowerCase();
       return chain === 'arc' || chain === 'arc-mainnet' || chain.startsWith('arc-');
     });
-
-    // This is an Arc-specific monitor. Do not silently use a same-address pair from another chain.
     if (!arcPairs.length) return { found: false };
     arcPairs.sort((a, b) => Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0));
     return { found: true, pair: arcPairs[0], pairs: arcPairs };
@@ -253,7 +243,6 @@ function renderArcPad(result) {
     compare('compareArcPad', result.error ? 'RETRY NEEDED' : 'NOT INDEXED', result.error ? 'warn-text' : 'bad-text');
     return null;
   }
-
   const m = result.meta;
   badge('arcPadBadge', 'INDEXED', 'ok');
   $('arcPadHeadline').textContent = `${m.name} (${m.symbol})`;
@@ -279,7 +268,6 @@ function renderDex(result) {
     compare('compareDex', result.error ? 'RETRY NEEDED' : 'NOT INDEXED', result.error ? 'warn-text' : 'bad-text');
     return null;
   }
-
   const p = result.pair;
   const buys = Number(p?.txns?.h24?.buys || 0);
   const sells = Number(p?.txns?.h24?.sells || 0);
@@ -308,7 +296,6 @@ function renderPool(arcPadMeta, dexPair, arcPadResult, dexResult) {
     $('terminalPool').textContent = incomplete ? 'UNRESOLVED' : 'NOT FOUND';
     return null;
   }
-
   badge('poolBadge', 'POOL FOUND', 'ok');
   $('poolHeadline').textContent = 'Market pool resolved';
   $('poolCopy').textContent = arcPadMeta?.pool && dexPair?.pairAddress && arcPadMeta.pool.toLowerCase() === dexPair.pairAddress.toLowerCase()
@@ -324,7 +311,6 @@ function renderPool(arcPadMeta, dexPair, arcPadResult, dexResult) {
 function summarize(token, arcPad, dex, pool) {
   const liveCount = Number(Boolean(arcPad?.found)) + Number(Boolean(dex?.found));
   const hasSourceError = Boolean(arcPad?.error || dex?.error);
-
   if (liveCount === 2 && pool) {
     badge('summaryBadge', 'PROPAGATED', 'ok');
     $('summaryHeadline').textContent = 'Launch data is propagating';
@@ -375,6 +361,10 @@ async function run(token) {
   const pool = renderPool(arcPadMeta, dexPair, arcPadResult, dexResult);
   summarize(token, arcPadResult, dexResult, pool);
   $('lastChecked').textContent = new Date().toLocaleString(undefined, { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric' }).toUpperCase();
+
+  window.dispatchEvent(new CustomEvent('arc-monitor-result', {
+    detail: { token, pool, arcPadMeta, dexPair }
+  }));
 }
 
 form.addEventListener('submit', (event) => {
@@ -390,4 +380,5 @@ $('copyPool').addEventListener('click', () => {
   if (pool) copy(pool, 'POOL ADDRESS COPIED');
 });
 
-run(input.value);
+// Delay the first run one tick so optional analyzer modules can attach event listeners.
+setTimeout(() => run(input.value), 0);
