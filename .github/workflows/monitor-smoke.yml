@@ -25,5 +25,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check monitor JavaScript syntax
+        run: |
+          node --check monitor/monitor.js
+          node --check monitor/onchain.js
+          node --check monitor/depth.js
       - name: Test three live Arc markets
         run: node scripts/smoke-monitor.mjs
