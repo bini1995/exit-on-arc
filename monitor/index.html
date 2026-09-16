@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050706" />
+  <meta name="description" content="Arc Launch Monitor compares how newly launched Arc assets appear across ArcPad, Uniswap V3, DexScreener and discovery tooling." />
+  <meta property="og:title" content="Arc Launch Monitor | Exit on Arc" />
+  <meta property="og:description" content="Track how a token propagates across the Arc ecosystem." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://exitonarc.xyz/monitor/" />
+  <meta name="twitter:card" content="summary" />
+  <title>Arc Launch Monitor | Exit on Arc</title>
+  <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="monitor.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="Exit Liquidity home">
+      <img src="../logo.svg" alt="" />
+      <span>EXIT</span>
+    </a>
+    <nav class="nav" aria-label="Monitor navigation">
+      <a href="../">Home</a>
+      <a class="active" href="./">Monitor</a>
+      <a href="https://github.com/bini1995/exit-on-arc" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    </nav>
+    <div class="network-pill"><span></span> ARC // 5042</div>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="status-dot"></span> OPEN-SOURCE ARC TOOLING EXPERIMENT</div>
+        <h1>ARC LAUNCH<br /><span>MONITOR</span></h1>
+        <p class="lede">Track how a token propagates across the Arc ecosystem — from launch metadata to liquidity and market-data indexing.</p>
+
+        <form id="tokenForm" class="lookup" novalidate>
+          <label for="tokenInput">ARC TOKEN CONTRACT</label>
+          <div class="lookup-row">
+            <input id="tokenInput" name="token" autocomplete="off" spellcheck="false" aria-describedby="inputHelp" />
+            <button type="submit">CHECK TOKEN <span>↗</span></button>
+          </div>
+          <p id="inputHelp">Paste any 0x token contract. ArcPad + DexScreener are checked live in your browser.</p>
+        </form>
+
+        <div class="quick-actions">
+          <button id="loadExit" type="button">LOAD $EXIT DEMO</button>
+          <button id="copyMonitorLink" type="button">COPY MONITOR LINK</button>
+          <a id="arcscanLink" href="https://arcscan.app" target="_blank" rel="noopener noreferrer">OPEN ARCSCAN ↗</a>
+        </div>
+      </div>
+
+      <aside class="terminal" aria-label="Launch monitor terminal">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <b>monitor://arc/mainnet</b>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <p><em>&gt;</em> network <strong>ARC // 5042</strong></p>
+          <p><em>&gt;</em> token <strong id="terminalToken">WAITING...</strong></p>
+          <p><em>&gt;</em> arcpad <strong id="terminalArcPad">PENDING</strong></p>
+          <p><em>&gt;</em> uniswap_v3 <strong id="terminalPool">PENDING</strong></p>
+          <p><em>&gt;</em> dexscreener <strong id="terminalDex">PENDING</strong></p>
+          <p><em>&gt;</em> fomo <strong>MANUAL CHECK</strong></p>
+          <p class="terminal-ready"><em>&gt;</em> status <strong id="terminalStatus">READY_</strong></p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="strip" aria-label="Monitor capabilities">
+      <div>LIVE ARCPAD METADATA <i>◆</i> LIVE DEXSCREENER MARKET DATA <i>◆</i> ARC // 5042 <i>◆</i> NO WALLET REQUIRED <i>◆</i> NO BACKEND <i>◆</i></div>
+    </section>
+
+    <section class="section shell" id="results">
+      <div class="section-head">
+        <div>
+          <div class="kicker">01 // PROPAGATION STATUS</div>
+          <h2 id="tokenTitle">CHECKING THE EXIT...</h2>
+        </div>
+        <div class="last-check">
+          <span>LAST CHECKED</span>
+          <strong id="lastChecked">—</strong>
+        </div>
+      </div>
+
+      <div id="errorBox" class="error-box" hidden></div>
+
+      <div class="status-grid">
+        <article class="status-card" id="arcCard">
+          <div class="status-card-top">
+            <span class="card-label">ARC NETWORK</span>
+            <span class="badge ok">TARGET</span>
+          </div>
+          <strong>CHAIN 5042</strong>
+          <p>Monitor target: Arc public mainnet.</p>
+          <div class="detail"><span>Contract</span><code id="arcContract">—</code></div>
+          <a id="arcCardLink" class="card-link" href="https://arcscan.app" target="_blank" rel="noopener noreferrer">VIEW ON ARCSCAN ↗</a>
+        </article>
+
+        <article class="status-card" id="arcPadCard">
+          <div class="status-card-top">
+            <span class="card-label">ARCPAD</span>
+            <span id="arcPadBadge" class="badge loading">CHECKING</span>
+          </div>
+          <strong id="arcPadHeadline">Looking for launch metadata</strong>
+          <p id="arcPadCopy">Querying ArcPad's public, CORS-open developer API.</p>
+          <div class="detail"><span>Pool</span><code id="arcPadPool">—</code></div>
+          <div class="metrics compact">
+            <div><span>Price</span><strong id="arcPadPrice">—</strong></div>
+            <div><span>Market cap</span><strong id="arcPadMcap">—</strong></div>
+          </div>
+          <a id="arcPadLink" class="card-link disabled" href="#">OPEN ARCPAD ↗</a>
+        </article>
+
+        <article class="status-card" id="poolCard">
+          <div class="status-card-top">
+            <span class="card-label">UNISWAP V3</span>
+            <span id="poolBadge" class="badge loading">CHECKING</span>
+          </div>
+          <strong id="poolHeadline">Resolving market</strong>
+          <p id="poolCopy">Looking for an indexed pool associated with this contract.</p>
+          <div class="detail"><span>Pool</span><code id="poolAddress">—</code></div>
+          <button id="copyPool" class="card-link button-link" type="button" disabled>COPY POOL ADDRESS</button>
+        </article>
+
+        <article class="status-card" id="dexCard">
+          <div class="status-card-top">
+            <span class="card-label">DEXSCREENER</span>
+            <span id="dexBadge" class="badge loading">CHECKING</span>
+          </div>
+          <strong id="dexHeadline">Searching indexed pairs</strong>
+          <p id="dexCopy">Querying DexScreener's public market-data API.</p>
+          <div class="metrics">
+            <div><span>Liquidity</span><strong id="dexLiquidity">—</strong></div>
+            <div><span>24h volume</span><strong id="dexVolume">—</strong></div>
+            <div><span>Market cap</span><strong id="dexMcap">—</strong></div>
+            <div><span>24h txns</span><strong id="dexTxns">—</strong></div>
+          </div>
+          <a id="dexLink" class="card-link disabled" href="#">OPEN DEXSCREENER ↗</a>
+        </article>
+
+        <article class="status-card manual-card" id="fomoCard">
+          <div class="status-card-top">
+            <span class="card-label">FOMO</span>
+            <span class="badge warn">MANUAL</span>
+          </div>
+          <strong>External status check</strong>
+          <p id="fomoCopy">Fomo does not currently expose an integration endpoint used by this monitor. Open Fomo and search the contract directly.</p>
+          <div id="exitFomoNote" class="notice" hidden>
+            $EXIT note: token indexing was observed on Sep 16, 2026; trading availability was under support review after a liquidity-detection discrepancy.
+          </div>
+          <a class="card-link" href="https://fomo.family" target="_blank" rel="noopener noreferrer">OPEN FOMO ↗</a>
+        </article>
+
+        <article class="status-card summary-card">
+          <div class="status-card-top">
+            <span class="card-label">MONITOR SUMMARY</span>
+            <span id="summaryBadge" class="badge loading">CHECKING</span>
+          </div>
+          <strong id="summaryHeadline">Running checks</strong>
+          <p id="summaryCopy">Waiting for live sources to respond.</p>
+          <div class="detail"><span>Token</span><code id="summaryToken">—</code></div>
+          <button id="copyToken" class="card-link button-link" type="button">COPY TOKEN ADDRESS</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell compare-section">
+      <div class="kicker">02 // INDEXER COMPARISON</div>
+      <div class="compare-intro">
+        <h2>SAME TOKEN.<br /><span>DIFFERENT INDEXERS.</span></h2>
+        <p>New-chain markets can be live before every wallet, indexer and discovery platform interprets them consistently. This view makes those differences visible without pretending every source exposes the same data.</p>
+      </div>
+
+      <div class="comparison" id="comparison">
+        <div class="compare-row">
+          <div><strong>ArcPad</strong><span>Launch metadata + Arc-native market source</span></div>
+          <b id="compareArcPad" class="compare-status loading-text">CHECKING...</b>
+        </div>
+        <div class="compare-row">
+          <div><strong>DexScreener</strong><span>Independent pair + market-data indexer</span></div>
+          <b id="compareDex" class="compare-status loading-text">CHECKING...</b>
+        </div>
+        <div class="compare-row">
+          <div><strong>Fomo</strong><span>Discovery / trading platform</span></div>
+          <b class="compare-status warn-text">MANUAL CHECK</b>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell about-section">
+      <div class="kicker">03 // WHY THIS EXISTS</div>
+      <div class="about-grid">
+        <h2>BUILT FROM A<br />REAL MAINNET<br /><span>EDGE CASE.</span></h2>
+        <div>
+          <p>Arc Launch Monitor started after one newly launched Arc token appeared with live Uniswap V3 liquidity on one market-data service while another discovery platform initially interpreted the same locked position differently.</p>
+          <p>The goal is simple: give Arc builders one lightweight place to compare what public ecosystem tools currently know about a token.</p>
+          <p class="muted">V1 intentionally uses public read-only APIs and requires no wallet connection. Results are informational and may lag the underlying chain.</p>
+          <a class="source-link" href="https://github.com/bini1995/exit-on-arc" target="_blank" rel="noopener noreferrer">VIEW SOURCE ON GITHUB ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer shell">
+    <div class="footer-brand"><img src="../logo.svg" alt="" /><strong>ARC LAUNCH MONITOR</strong></div>
+    <p>Independent open-source ecosystem experiment. Not affiliated with or endorsed by Arc, Circle, ArcPad, Uniswap, DexScreener, or Fomo. Market data can be delayed or incomplete. Nothing on this page is financial advice.</p>
+    <div class="footer-bottom"><span>© 2026 EXIT LIQUIDITY</span><a href="../">BACK TO EXITONARC.XYZ ↗</a></div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">COPIED</div>
+  <script src="monitor.js"></script>
+</body>
+</html>
