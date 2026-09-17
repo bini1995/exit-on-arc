@@ -288,3 +288,11 @@
   window.addEventListener('arc-monitor-result', (event) => analyze(event.detail));
   clearDepth();
 })();
+
+// Keep the range visualizer modular while preserving the static GitHub Pages entrypoint.
+if (!document.querySelector('script[data-arc-range-visual]')) {
+  const rangeScript = document.createElement('script');
+  rangeScript.src = 'range.js';
+  rangeScript.dataset.arcRangeVisual = 'true';
+  document.body.appendChild(rangeScript);
+}
