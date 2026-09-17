@@ -1,7 +1,144 @@
 {
   "schemaVersion": 1,
-  "generatedAt": null,
+  "generatedAt": "2026-09-17T04:20:45.080Z",
   "intervalHours": 6,
   "retentionDays": 30,
-  "tokens": {}
+  "tokens": {
+    "0x1b556933d64ae9bb32044711c5393b2e5663d185": {
+      "name": "Exit Liquidity",
+      "symbol": "EXIT",
+      "address": "0x1b556933D64AE9bb32044711C5393B2E5663d185",
+      "snapshots": [
+        {
+          "timestamp": "2026-09-17T04:20:45.080Z",
+          "pool": "0xD50e6E961e1302798dd5111d464600c838d8821B",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 1,
+          "priceUsd": 0.0000029941666675926782,
+          "arcPadPriceUsd": 0.000003021398575991,
+          "reportedLiquidityUsd": 2994.14,
+          "reportedVolume24hUsd": 31.73,
+          "reportedTxns24h": 5,
+          "marketCapUsd": 3021.398575991,
+          "usdcReserve": 12.107215,
+          "tokenReserve": 995950017.2521387,
+          "tokenValueAtSpotUsd": 2982.040344244707,
+          "usdcSharePct": 0.40436266952234395,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": -403519,
+          "token0": "0x1b556933d64ae9bb32044711c5393b2e5663d185",
+          "token1": "0x3600000000000000000000000000000000000000",
+          "directUsdcPair": true
+        }
+      ],
+      "lastSuccessAt": "2026-09-17T04:20:45.080Z",
+      "lastError": null
+    },
+    "0xc21dacff018d3c606e091809dbe83d079c9e2e01": {
+      "name": "Archetypes",
+      "symbol": "ARCHE",
+      "address": "0xC21daCfF018D3c606e091809DbE83D079C9e2e01",
+      "snapshots": [
+        {
+          "timestamp": "2026-09-17T04:20:45.080Z",
+          "pool": "0xA57A7ffd479A3bed1Daad5Cf07A10ba74002e9c3",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 1,
+          "priceUsd": 0.00000300217585252818,
+          "arcPadPriceUsd": 0.000002974039300427,
+          "reportedLiquidityUsd": 3002.29,
+          "reportedVolume24hUsd": 5578.6,
+          "reportedTxns24h": 123,
+          "marketCapUsd": 2974.039300427,
+          "usdcReserve": 16.062952,
+          "tokenReserve": 994620635.5879871,
+          "tokenValueAtSpotUsd": 2986.0260545884853,
+          "usdcSharePct": 0.535059152634972,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": 403492,
+          "token0": "0x3600000000000000000000000000000000000000",
+          "token1": "0xc21dacff018d3c606e091809dbe83d079c9e2e01",
+          "directUsdcPair": true
+        }
+      ],
+      "lastSuccessAt": "2026-09-17T04:20:45.080Z",
+      "lastError": null
+    },
+    "0x03e854c019bba45b08ea56c72dcb0fc3853633b2": {
+      "name": "BikeTyson on arc",
+      "symbol": "BIKETYSON",
+      "address": "0x03e854C019bbA45B08ea56c72dCb0Fc3853633B2",
+      "snapshots": [
+        {
+          "timestamp": "2026-09-17T04:20:45.080Z",
+          "pool": "0x5ae64Be10D9Ab07974E960E5D11D500c552c3b9a",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 1,
+          "priceUsd": 0.0000029755585480202355,
+          "arcPadPriceUsd": 0.000002950152480417,
+          "reportedLiquidityUsd": 2975.64,
+          "reportedVolume24hUsd": 617.08,
+          "reportedTxns24h": 18,
+          "marketCapUsd": 2950.152480417,
+          "usdcReserve": 2.796396,
+          "tokenReserve": 999059328.0897721,
+          "tokenValueAtSpotUsd": 2972.7595236768743,
+          "usdcSharePct": 0.09397894294332973,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": -403582,
+          "token0": "0x03e854c019bba45b08ea56c72dcb0fc3853633b2",
+          "token1": "0x3600000000000000000000000000000000000000",
+          "directUsdcPair": true
+        }
+      ],
+      "lastSuccessAt": "2026-09-17T04:20:45.080Z",
+      "lastError": null
+    },
+    "0xc786c521f01db3056e9588852ee1d74268f06012": {
+      "name": "NamesOnArc",
+      "symbol": "NAMESONARC",
+      "address": "0xc786c521F01Db3056e9588852EE1D74268F06012",
+      "snapshots": [
+        {
+          "timestamp": "2026-09-17T04:20:45.080Z",
+          "pool": "0x9300B1d5df7C3EDF469b443dfb25814fA542C519",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 1,
+          "priceUsd": 0.0000030104561622612,
+          "arcPadPriceUsd": 0.00000298303914509,
+          "reportedLiquidityUsd": 3010.34,
+          "reportedVolume24hUsd": 563.7,
+          "reportedTxns24h": 61,
+          "marketCapUsd": 2983.0391450899997,
+          "usdcReserve": 20.177983,
+          "tokenReserve": 993260873.3279791,
+          "tokenValueAtSpotUsd": 2990.168316843156,
+          "usdcSharePct": 0.6702877672595776,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": 403464,
+          "token0": "0x3600000000000000000000000000000000000000",
+          "token1": "0xc786c521f01db3056e9588852ee1d74268f06012",
+          "directUsdcPair": true
+        }
+      ],
+      "lastSuccessAt": "2026-09-17T04:20:45.080Z",
+      "lastError": null
+    }
+  },
+  "capture": {
+    "attempted": 4,
+    "succeeded": 4
+  }
 }
