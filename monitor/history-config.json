@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "intervalHours": 6,
+  "retentionDays": 30,
+  "tokens": [
+    {
+      "name": "Exit Liquidity",
+      "symbol": "EXIT",
+      "address": "0x1b556933D64AE9bb32044711C5393B2E5663d185"
+    },
+    {
+      "name": "Archetypes",
+      "symbol": "ARCHE",
+      "address": "0xC21daCfF018D3c606e091809DbE83D079C9e2e01"
+    },
+    {
+      "name": "BikeTyson on arc",
+      "symbol": "BIKETYSON",
+      "address": "0x03e854C019bbA45B08ea56c72dCb0Fc3853633B2"
+    },
+    {
+      "name": "NamesOnArc",
+      "symbol": "NAMESONARC",
+      "address": "0xc786c521F01Db3056e9588852EE1D74268F06012"
+    }
+  ]
+}
