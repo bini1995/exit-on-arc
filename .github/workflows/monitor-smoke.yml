@@ -30,5 +30,6 @@ jobs:
           node --check monitor/monitor.js
           node --check monitor/onchain.js
           node --check monitor/depth.js
+          node --check monitor/diagnostics.js
       - name: Test three live Arc markets
         run: node scripts/smoke-monitor.mjs
