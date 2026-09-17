@@ -1,0 +1,46 @@
+name: Arc market history snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/snapshot-history.mjs'
+      - 'monitor/history-config.json'
+      - '.github/workflows/history-snapshot.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: arc-market-history
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Capture Arc market snapshots
+        run: node scripts/snapshot-history.mjs
+      - name: Commit updated history
+        run: |
+          if git diff --quiet -- monitor/history-data.json; then
+            echo "No history changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add monitor/history-data.json
+          git commit -m "Update Arc market history snapshot"
+          git push
