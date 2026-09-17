@@ -289,10 +289,22 @@
   clearDepth();
 })();
 
-// Keep the range visualizer modular while preserving the static GitHub Pages entrypoint.
+function loadHistoryModule() {
+  if (document.querySelector('script[data-arc-market-history]')) return;
+  const historyScript = document.createElement('script');
+  historyScript.src = 'history.js';
+  historyScript.dataset.arcMarketHistory = 'true';
+  document.body.appendChild(historyScript);
+}
+
+// Keep optional visual modules modular while preserving the static GitHub Pages entrypoint.
 if (!document.querySelector('script[data-arc-range-visual]')) {
   const rangeScript = document.createElement('script');
   rangeScript.src = 'range.js';
   rangeScript.dataset.arcRangeVisual = 'true';
+  rangeScript.addEventListener('load', loadHistoryModule, { once: true });
+  rangeScript.addEventListener('error', loadHistoryModule, { once: true });
   document.body.appendChild(rangeScript);
+} else {
+  loadHistoryModule();
 }
