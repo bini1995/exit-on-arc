@@ -6,6 +6,7 @@ on:
     paths:
       - 'monitor/**'
       - 'scripts/smoke-monitor.mjs'
+      - 'scripts/snapshot-history.mjs'
       - '.github/workflows/monitor-smoke.yml'
   workflow_dispatch:
   schedule:
@@ -31,6 +32,11 @@ jobs:
           node --check monitor/onchain.js
           node --check monitor/depth.js
           node --check monitor/range.js
+          node --check monitor/history.js
           node --check monitor/diagnostics.js
+          node --check scripts/snapshot-history.mjs
+      - name: Validate history configuration
+        run: |
+          node -e "const fs=require('fs'); const c=JSON.parse(fs.readFileSync('monitor/history-config.json','utf8')); if(c.intervalHours!==6||c.retentionDays!==30||c.tokens.length!==4) process.exit(1); console.log('History config: PASS');"
       - name: Test three live Arc markets
         run: node scripts/smoke-monitor.mjs
