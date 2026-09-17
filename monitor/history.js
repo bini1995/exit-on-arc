@@ -6,7 +6,7 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    .history-section{position:relative}.history-state{text-align:right}.history-state span{display:block;color:var(--muted);font-size:.66rem;letter-spacing:.12em}.history-state strong{display:block;color:var(--green);font-size:.82rem;margin-top:6px}.history-intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:22px}.history-intro p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.55}.history-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-soft);border:1px solid var(--line);margin-bottom:18px}.history-summary>div{background:#080d09;padding:14px}.history-summary span{display:block;color:#667068;font-size:.55rem;text-transform:uppercase;letter-spacing:.08em}.history-summary strong{display:block;margin-top:6px;font-size:.8rem}.history-charts{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line)}.history-chart{padding:22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.012)}.history-chart-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.history-chart-head span{color:var(--muted);font-size:.59rem;letter-spacing:.08em;text-transform:uppercase}.history-chart-head strong{font-size:.86rem}.history-svg{display:block;width:100%;height:160px;border:1px solid var(--line-soft);background:#040705}.history-gridline{stroke:#1a211b;stroke-width:1}.history-line{fill:none;stroke:var(--green);stroke-width:2;vector-effect:non-scaling-stroke}.history-dot{fill:var(--green)}.history-axis{fill:#6e786f;font-size:9px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.history-range{display:flex;justify-content:space-between;color:#667068;font-size:.58rem;margin-top:8px}.history-flags{margin-top:18px;border:1px solid var(--line)}.history-flags-head{padding:12px 15px;border-bottom:1px solid var(--line);font-size:.62rem;color:var(--green);font-weight:900;letter-spacing:.08em}.history-flag{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line-soft);align-items:start}.history-flag:last-child{border-bottom:0}.history-flag b{font-size:.55rem;border:1px solid var(--line);padding:3px 5px;color:#89928b}.history-flag.warn b{color:var(--warn);border-color:rgba(255,204,77,.45)}.history-flag.bad b{color:var(--bad);border-color:rgba(255,91,91,.45)}.history-flag.ok b{color:var(--green);border-color:rgba(0,255,71,.35)}.history-flag p{margin:0;color:#a9b2ab;font-size:.71rem;line-height:1.45}.history-empty{padding:22px;border:1px solid var(--line);color:var(--muted);font-size:.76rem;line-height:1.55}.history-note{margin-top:16px;color:var(--muted);font-size:.7rem;line-height:1.55}@media(max-width:960px){.history-intro,.history-charts{grid-template-columns:1fr}.history-summary{grid-template-columns:1fr 1fr}.history-state{text-align:left;margin-top:18px}}@media(max-width:640px){.history-summary{grid-template-columns:1fr}.history-chart{padding:18px}}
+    .history-section{position:relative}.history-state{text-align:right}.history-state span{display:block;color:var(--muted);font-size:.66rem;letter-spacing:.12em}.history-state strong{display:block;color:var(--green);font-size:.82rem;margin-top:6px}.history-intro{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:22px}.history-intro p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.55}.history-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-soft);border:1px solid var(--line);margin-bottom:18px}.history-summary>div{background:#080d09;padding:14px}.history-summary span{display:block;color:#667068;font-size:.55rem;text-transform:uppercase;letter-spacing:.08em}.history-summary strong{display:block;margin-top:6px;font-size:.8rem}.history-alerts{border:1px solid var(--line);margin:0 0 18px;background:#050805}.history-alert-head{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;padding:15px 17px;border-bottom:1px solid var(--line)}.history-alert-title span{display:block;color:var(--green);font-size:.59rem;font-weight:900;letter-spacing:.09em}.history-alert-title p{margin:6px 0 0;color:var(--muted);font-size:.69rem;line-height:1.45}.history-alert-state{text-align:right}.history-alert-state span{display:block;color:#667068;font-size:.52rem;letter-spacing:.08em}.history-alert-state strong{display:block;margin-top:5px;font-size:.82rem}.history-alert-state strong.ok{color:var(--green)}.history-alert-state strong.warn{color:var(--warn)}.history-alert-state strong.bad{color:var(--bad)}.history-alert-list{display:grid}.history-alert{display:grid;grid-template-columns:90px 105px 1fr;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line-soft);align-items:start}.history-alert:last-child{border-bottom:0}.history-alert .severity,.history-alert .code{font-size:.53rem;font-weight:900;letter-spacing:.06em}.history-alert .severity{border:1px solid var(--line);padding:4px 6px;text-align:center}.history-alert.warn .severity{color:var(--warn);border-color:rgba(255,204,77,.45)}.history-alert.bad .severity{color:var(--bad);border-color:rgba(255,91,91,.45)}.history-alert.ok .severity{color:var(--green);border-color:rgba(0,255,71,.35)}.history-alert .code{color:#89928b;padding-top:4px}.history-alert p{margin:0;color:#a9b2ab;font-size:.71rem;line-height:1.5}.history-charts{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-left:1px solid var(--line)}.history-chart{padding:22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.012)}.history-chart-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.history-chart-head span{color:var(--muted);font-size:.59rem;letter-spacing:.08em;text-transform:uppercase}.history-chart-head strong{font-size:.86rem}.history-svg{display:block;width:100%;height:160px;border:1px solid var(--line-soft);background:#040705}.history-gridline{stroke:#1a211b;stroke-width:1}.history-line{fill:none;stroke:var(--green);stroke-width:2;vector-effect:non-scaling-stroke}.history-dot{fill:var(--green)}.history-axis{fill:#6e786f;font-size:9px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.history-range{display:flex;justify-content:space-between;color:#667068;font-size:.58rem;margin-top:8px}.history-flags{margin-top:18px;border:1px solid var(--line)}.history-flags-head{padding:12px 15px;border-bottom:1px solid var(--line);font-size:.62rem;color:var(--green);font-weight:900;letter-spacing:.08em}.history-flag{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line-soft);align-items:start}.history-flag:last-child{border-bottom:0}.history-flag b{font-size:.55rem;border:1px solid var(--line);padding:3px 5px;color:#89928b}.history-flag.warn b{color:var(--warn);border-color:rgba(255,204,77,.45)}.history-flag.bad b{color:var(--bad);border-color:rgba(255,91,91,.45)}.history-flag.ok b{color:var(--green);border-color:rgba(0,255,71,.35)}.history-flag p{margin:0;color:#a9b2ab;font-size:.71rem;line-height:1.45}.history-empty{padding:22px;border:1px solid var(--line);color:var(--muted);font-size:.76rem;line-height:1.55}.history-note{margin-top:16px;color:var(--muted);font-size:.7rem;line-height:1.55}@media(max-width:960px){.history-intro,.history-charts{grid-template-columns:1fr}.history-summary{grid-template-columns:1fr 1fr}.history-state{text-align:left;margin-top:18px}.history-alert{grid-template-columns:78px 92px 1fr}}@media(max-width:640px){.history-summary{grid-template-columns:1fr}.history-chart{padding:18px}.history-alert-head{grid-template-columns:1fr}.history-alert-state{text-align:left}.history-alert{grid-template-columns:1fr}.history-alert .severity{width:max-content}.history-alert .code{padding-top:0}}
   `;
   document.head.appendChild(style);
 
@@ -21,14 +21,14 @@
   section.innerHTML = `
     <div class="section-head">
       <div>
-        <div class="kicker">06 // MARKET HISTORY</div>
+        <div class="kicker">06 // MARKET HISTORY + ALERTS</div>
         <h2>HOW HAS THE POOL<br /><span>CHANGED OVER TIME?</span></h2>
       </div>
       <div class="history-state"><span>SNAPSHOT ENGINE</span><strong id="historyStatus">WAITING</strong><span style="margin-top:8px">SAMPLES</span><strong id="historySamples">—</strong></div>
     </div>
     <div class="history-intro">
-      <p>Arc Launch Monitor now records benchmark token snapshots every six hours through GitHub Actions. The history view keeps reported market data separate from direct Arc RPC reserves so changes can be compared over time.</p>
-      <p>History is currently enabled for a fixed four-token benchmark set. A missing history series means the contract is not tracked yet or the first scheduled capture has not completed — not that the token has no market activity.</p>
+      <p>Arc Launch Monitor records benchmark token snapshots every six hours through GitHub Actions. The history view keeps reported market data separate from direct Arc RPC reserves so changes can be compared over time.</p>
+      <p>The anomaly engine applies transparent heuristics to committed snapshots. Alerts are diagnostics, not proof of manipulation, liquidity removal, or future execution quality.</p>
     </div>
     <div class="history-summary">
       <div><span>Latest snapshot</span><strong id="historyLatest">—</strong></div>
@@ -36,8 +36,15 @@
       <div><span>Reported liquidity</span><strong id="historyLatestReported">—</strong></div>
       <div><span>Composition</span><strong id="historyLatestComposition">—</strong></div>
     </div>
+    <div id="historyAlerts" class="history-alerts">
+      <div class="history-alert-head">
+        <div class="history-alert-title"><span>AUTOMATED ANOMALY ENGINE</span><p>Checks reserve changes, indexer/onchain divergence, price moves, active liquidity, composition, data freshness and collector failures.</p></div>
+        <div class="history-alert-state"><span>CURRENT ALERT STATE</span><strong id="historyAlertStatus">WAITING</strong></div>
+      </div>
+      <div id="historyAlertList" class="history-alert-list"><div class="history-alert ok"><span class="severity">WAITING</span><span class="code">NO DATA</span><p>Waiting for a tracked token check.</p></div></div>
+    </div>
     <div id="historyBody" class="history-empty">Waiting for a token check…</div>
-    <p class="history-note">Snapshots are periodic observations, not continuous market data. Reported liquidity comes from DexScreener while reserves, tick and active liquidity come from direct Arc RPC reads. Historical values can have gaps when an upstream service is unavailable.</p>
+    <p class="history-note">Snapshots are periodic observations, not continuous market data. Reported liquidity comes from DexScreener while reserves, tick and active liquidity come from direct Arc RPC reads. Headline liquidity, raw USDC balance and executable depth are different concepts. Historical values can have gaps when an upstream service is unavailable.</p>
   `;
   if (rangeSection) rangeSection.after(section); else depthSection.before(section);
 
@@ -49,7 +56,7 @@
     setKicker('#poolCompare .kicker', '03 // ALL-POOL ONCHAIN COMPARISON');
     setKicker('#onchain .kicker', '04 // ONCHAIN POOL COMPOSITION');
     setKicker('#rangeVisual .kicker', '05 // V3 RANGE / TICK MAP');
-    setKicker('#marketHistory .kicker', '06 // MARKET HISTORY');
+    setKicker('#marketHistory .kicker', '06 // MARKET HISTORY + ALERTS');
     setKicker('#depth .kicker', '07 // SELL-SIDE DEPTH ESTIMATOR');
     setKicker('#diagnosticsReport .kicker', '08 // SHAREABLE DIAGNOSTICS REPORT');
     setKicker('.compare-section .kicker', '09 // INDEXER COMPARISON');
@@ -87,6 +94,9 @@
     byId('historyLatestUsdc').textContent = '—';
     byId('historyLatestReported').textContent = '—';
     byId('historyLatestComposition').textContent = '—';
+    byId('historyAlertStatus').textContent = 'WAITING';
+    byId('historyAlertStatus').className = '';
+    byId('historyAlertList').innerHTML = '<div class="history-alert ok"><span class="severity">WAITING</span><span class="code">NO DATA</span><p>Waiting for a tracked token check.</p></div>';
     byId('historyBody').className = 'history-empty';
     byId('historyBody').textContent = 'Waiting for a token check…';
   }
@@ -137,6 +147,95 @@
     return ((current - previous) / Math.abs(previous)) * 100;
   }
 
+  function anomaly(type, code, text) {
+    return { type, code, text };
+  }
+
+  function compositionRisk(value) {
+    const order = { MORE_BALANCED: 0, SKEWED: 1, ONE_SIDED: 2, HIGHLY_ONE_SIDED: 3, UNAVAILABLE: -1 };
+    return order[value] ?? -1;
+  }
+
+  function detectAnomalies(record, data, snapshots) {
+    const out = [];
+    const latest = snapshots.at(-1);
+    const previous = snapshots.at(-2);
+    const intervalHours = Number(data?.intervalHours || 6);
+
+    if (!latest) return [anomaly('warn', 'NO SNAPSHOT', 'No successful committed snapshot is available yet, so anomaly checks cannot run.')];
+
+    const latestTime = Date.parse(latest.timestamp || '');
+    if (Number.isFinite(latestTime)) {
+      const ageHours = (Date.now() - latestTime) / 3_600_000;
+      if (ageHours > intervalHours * 3) out.push(anomaly('bad', 'STALE DATA', `Latest successful snapshot is ${ageHours.toFixed(1)} hours old, more than three expected capture intervals.`));
+      else if (ageHours > intervalHours * 2) out.push(anomaly('warn', 'STALE DATA', `Latest successful snapshot is ${ageHours.toFixed(1)} hours old. The collector normally runs every ${intervalHours} hours.`));
+    }
+
+    const errorTime = Date.parse(record?.lastError?.timestamp || '');
+    const successTime = Date.parse(record?.lastSuccessAt || latest.timestamp || '');
+    if (record?.lastError && Number.isFinite(errorTime) && (!Number.isFinite(successTime) || errorTime >= successTime)) {
+      out.push(anomaly('warn', 'READ FAILURE', `The latest collector attempt recorded an upstream/RPC read failure: ${record.lastError.message || 'unknown error'}. Missing data is not treated as zero liquidity.`));
+    }
+
+    const share = Number(latest.usdcSharePct);
+    if (Number.isFinite(share) && (share < 5 || share > 95)) {
+      out.push(anomaly('warn', 'ONE-SIDED', `Estimated USDC share by spot value is ${share.toFixed(2)}%. The pool is highly one-sided at this snapshot; this does not by itself prove liquidity was removed.`));
+    } else if (latest.composition === 'ONE_SIDED') {
+      out.push(anomaly('warn', 'ONE-SIDED', 'The latest snapshot classifies the selected pool as one-sided by estimated spot value.'));
+    }
+
+    const reported = Number(latest.reportedLiquidityUsd);
+    const reserve = Number(latest.usdcReserve);
+    if (Number.isFinite(reported) && Number.isFinite(reserve) && reserve > 0) {
+      const ratio = reported / reserve;
+      if (ratio >= 25) {
+        out.push(anomaly('warn', 'METRIC GAP', `DexScreener reported liquidity is about ${ratio.toFixed(1)}× the pool's raw USDC balance. These are different metrics; neither number alone represents guaranteed executable sell depth.`));
+      }
+    }
+
+    if (previous) {
+      const usdcChange = changePct(Number(previous.usdcReserve), Number(latest.usdcReserve));
+      const reportedChange = changePct(Number(previous.reportedLiquidityUsd), Number(latest.reportedLiquidityUsd));
+      const priceChange = changePct(Number(previous.priceUsd), Number(latest.priceUsd));
+      const liquidityChange = changePct(Number(previous.activeLiquidity), Number(latest.activeLiquidity));
+
+      if (Number.isFinite(usdcChange) && usdcChange <= -35) out.push(anomaly('bad', 'RESERVE DROP', `USDC reserve fell ${Math.abs(usdcChange).toFixed(1)}% since the previous successful snapshot.`));
+      else if (Number.isFinite(usdcChange) && usdcChange <= -15) out.push(anomaly('warn', 'RESERVE DROP', `USDC reserve fell ${Math.abs(usdcChange).toFixed(1)}% since the previous successful snapshot.`));
+
+      if (Number.isFinite(reportedChange) && Number.isFinite(usdcChange) && reportedChange >= 10 && usdcChange <= -10) {
+        out.push(anomaly('bad', 'DIVERGENCE', `Reported liquidity rose ${reportedChange.toFixed(1)}% while raw USDC reserve fell ${Math.abs(usdcChange).toFixed(1)}%. The two measurements are moving in opposite directions.`));
+      }
+
+      if (Number.isFinite(priceChange) && Math.abs(priceChange) >= 40) out.push(anomaly('bad', 'PRICE MOVE', `Onchain token price moved ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(1)}% since the previous snapshot.`));
+      else if (Number.isFinite(priceChange) && Math.abs(priceChange) >= 20) out.push(anomaly('warn', 'PRICE MOVE', `Onchain token price moved ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(1)}% since the previous snapshot.`));
+
+      if (Number.isFinite(liquidityChange) && liquidityChange <= -35) out.push(anomaly('bad', 'ACTIVE L', `Active Uniswap V3 liquidity L fell ${Math.abs(liquidityChange).toFixed(1)}% since the previous snapshot.`));
+      else if (Number.isFinite(liquidityChange) && liquidityChange <= -15) out.push(anomaly('warn', 'ACTIVE L', `Active Uniswap V3 liquidity L fell ${Math.abs(liquidityChange).toFixed(1)}% since the previous snapshot.`));
+
+      const previousRisk = compositionRisk(previous.composition);
+      const currentRisk = compositionRisk(latest.composition);
+      if (previousRisk >= 0 && currentRisk > previousRisk) {
+        out.push(anomaly(currentRisk >= 3 ? 'bad' : 'warn', 'COMPOSITION', `Pool composition moved from ${formatComposition(previous.composition)} to ${formatComposition(latest.composition)}.`));
+      }
+    }
+
+    if (!out.length) out.push(anomaly('ok', 'NO TRIGGER', 'No configured anomaly threshold is currently triggered. This is not a guarantee of safety or execution quality.'));
+    return out;
+  }
+
+  function renderAlerts(record, data, snapshots) {
+    const alerts = detectAnomalies(record, data, snapshots);
+    const hasBad = alerts.some((item) => item.type === 'bad');
+    const hasWarn = alerts.some((item) => item.type === 'warn');
+    const status = hasBad ? 'HIGH ATTENTION' : hasWarn ? 'WATCH' : 'CLEAR';
+    const cls = hasBad ? 'bad' : hasWarn ? 'warn' : 'ok';
+    const statusNode = byId('historyAlertStatus');
+    statusNode.textContent = `${status} // ${alerts.filter((item) => item.type !== 'ok').length || 0} FLAG${alerts.filter((item) => item.type !== 'ok').length === 1 ? '' : 'S'}`;
+    statusNode.className = cls;
+    byId('historyAlertList').innerHTML = alerts.map((item) => `<div class="history-alert ${item.type}"><span class="severity">${item.type === 'bad' ? 'HIGH' : item.type === 'warn' ? 'WATCH' : 'CLEAR'}</span><span class="code">${item.code}</span><p>${item.text}</p></div>`).join('');
+    window.dispatchEvent(new CustomEvent('arc-monitor-anomalies', { detail: { token: activeToken, status, alerts, latestSnapshot: snapshots.at(-1) || null } }));
+  }
+
   function flags(snapshots) {
     if (snapshots.length < 2) return [{ type: 'ok', label: 'COLLECTING', text: 'One snapshot is available. Change flags begin after the next successful capture.' }];
     const prev = snapshots.at(-2);
@@ -165,9 +264,10 @@
     return out;
   }
 
-  function renderSeries(record) {
+  function renderSeries(record, data) {
     const snapshots = [...(record.snapshots || [])].filter((snap) => snap?.timestamp).sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
     byId('historySamples').textContent = `${snapshots.length}`;
+    renderAlerts(record, data, snapshots);
     if (!snapshots.length) {
       byId('historyStatus').textContent = 'COLLECTING';
       byId('historyBody').className = 'history-empty';
@@ -210,6 +310,8 @@
     activeToken = token?.toLowerCase() || null;
     const version = ++requestVersion;
     byId('historyStatus').textContent = 'LOADING';
+    byId('historyAlertStatus').textContent = 'CHECKING';
+    byId('historyAlertStatus').className = '';
     byId('historyBody').className = 'history-empty';
     byId('historyBody').textContent = 'Loading committed historical snapshots…';
     try {
@@ -221,14 +323,20 @@
       if (!record) {
         byId('historyStatus').textContent = 'UNTRACKED';
         byId('historySamples').textContent = '0';
+        byId('historyAlertStatus').textContent = 'UNTRACKED';
+        byId('historyAlertStatus').className = 'warn';
+        byId('historyAlertList').innerHTML = '<div class="history-alert warn"><span class="severity">WATCH</span><span class="code">UNTRACKED</span><p>Historical anomaly detection is not enabled for this contract. Live diagnostics above still work normally.</p></div>';
         byId('historyBody').className = 'history-empty';
         byId('historyBody').textContent = 'Historical collection is not currently enabled for this contract. The benchmark collector tracks $EXIT, ARCHE, BIKETYSON and NAMESONARC.';
         return;
       }
-      renderSeries(record);
+      renderSeries(record, data);
     } catch (error) {
       if (version !== requestVersion) return;
       byId('historyStatus').textContent = 'UNAVAILABLE';
+      byId('historyAlertStatus').textContent = 'DATA UNAVAILABLE';
+      byId('historyAlertStatus').className = 'warn';
+      byId('historyAlertList').innerHTML = '<div class="history-alert warn"><span class="severity">WATCH</span><span class="code">LOAD ERROR</span><p>Historical snapshot data could not be loaded. The Monitor does not interpret missing history as zero liquidity.</p></div>';
       byId('historyBody').className = 'history-empty';
       byId('historyBody').textContent = 'Historical snapshot data could not be loaded. Current live diagnostics above are unaffected.';
       console.warn('Arc Launch Monitor history load failed:', error);
