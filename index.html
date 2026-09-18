@@ -15,6 +15,7 @@
   <title>Exit Liquidity | $EXIT on Arc</title>
   <link rel="icon" href="logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="founding.css" />
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -30,6 +31,7 @@
       <a href="#thesis">Thesis</a>
       <a href="#token">Token</a>
       <a href="#market">Market</a>
+      <a href="#founding25">Founding 25</a>
       <a href="monitor/">Monitor</a>
       <a href="#community">Community</a>
     </nav>
@@ -48,7 +50,7 @@
 
         <div class="hero-actions">
           <a class="button button-primary" href="https://arcpad.meme/token/0x1b556933D64AE9bb32044711C5393B2E5663d185" target="_blank" rel="noopener noreferrer">Buy $EXIT <span>↗</span></a>
-          <a class="button button-ghost" href="https://x.com/EXITARC" target="_blank" rel="noopener noreferrer">Follow @EXITARC</a>
+          <a class="button button-ghost" href="#founding25">Founding 25</a>
           <a class="button button-ghost" href="monitor/">Arc Launch Monitor</a>
         </div>
 
@@ -184,17 +186,70 @@
       </div>
     </section>
 
+    <section class="section founding-section" id="founding25">
+      <div class="section-shell">
+        <div class="section-kicker reveal">05 // FOUNDING 25</div>
+        <div class="founding-heading reveal">
+          <h2>25 REAL PEOPLE.<br /><span>FROM THE START.</span></h2>
+          <p class="founding-intro">$EXIT is not going to pretend traction exists before it does. The Founding 25 is a small public record of the first community holders who choose to build this experiment with us — without fake wallets, wash volume or promises of profit.</p>
+        </div>
+
+        <div class="founding-grid reveal">
+          <article class="founding-progress-panel">
+            <span class="founding-panel-label">VERIFIED FOUNDING MEMBERS</span>
+            <div class="founding-count"><strong id="foundingBigCount">—</strong><span>/ 25</span></div>
+            <p class="founding-count-copy">Community holders who have opted into public recognition and been verified as holding $EXIT.</p>
+            <div class="founding-progress" aria-label="Founding 25 progress"><span id="foundingProgressFill"></span></div>
+
+            <div class="founding-live-grid">
+              <div><span>Verified Founding 25</span><strong id="foundingVerifiedCount">—</strong></div>
+              <div><span>Open spots</span><strong id="foundingOpenSpots">—</strong></div>
+              <div><span>Onchain holders</span><strong id="foundingHolderCount">—</strong></div>
+              <div><span>Holder read</span><strong id="foundingHolderStatus" class="warn">WAITING</strong></div>
+              <div><span>Holder source</span><strong id="foundingHolderSource">Arc Explorer</strong></div>
+              <div><span>Roster updated</span><strong id="foundingRosterUpdated">—</strong></div>
+            </div>
+          </article>
+
+          <article class="founding-rules-panel">
+            <span class="founding-panel-label">HOW IT WORKS</span>
+            <ul class="founding-rules">
+              <li><strong>Hold $EXIT on Arc.</strong> There is no minimum balance requirement for Founding 25 recognition beyond a positive token balance at verification.</li>
+              <li><strong>Opt in publicly.</strong> Send @EXITARC your wallet address and the name or X handle you want shown. We do not publish a wallet as a Founding member without an opt-in.</li>
+              <li><strong>One community member, one spot.</strong> Pool, router and project-controlled addresses are not Founding 25 members. Obvious duplicate-wallet attempts can be rejected.</li>
+              <li><strong>Recognition, not a financial reward.</strong> A Founding spot does not promise profit, token rewards, governance rights or future compensation.</li>
+              <li><strong>Permanent OG record.</strong> Once a legitimate Founding member is verified and added, the recognition stays as part of the project history even if that member later sells.</li>
+              <li><strong>Have a voice.</strong> Founding members can help suggest Arc markets to investigate, content ideas and community/tool experiments.</li>
+            </ul>
+            <div class="founding-actions">
+              <a class="button button-primary" href="https://x.com/EXITARC" target="_blank" rel="noopener noreferrer">CLAIM VIA @EXITARC ↗</a>
+              <a class="button button-ghost" href="https://arcpad.meme/token/0x1b556933D64AE9bb32044711C5393B2E5663d185" target="_blank" rel="noopener noreferrer">VIEW $EXIT ↗</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="founding-roster reveal">
+          <div class="founding-roster-head"><span>FOUNDING 25 // PUBLIC ROSTER</span><span>OPT-IN ONLY</span></div>
+          <div class="founding-roster-list" id="foundingRosterList">
+            <div class="founding-roster-empty">Loading public Founding 25 roster…</div>
+          </div>
+        </div>
+
+        <p class="founding-note reveal">The live onchain holder count is informational and is intentionally separate from Founding 25 membership: a token holder can be a pool, contract, project wallet or someone who has not opted into public recognition. Verification is manual so the site does not pretend every address represents a unique person.</p>
+      </div>
+    </section>
+
     <section class="section community-section" id="community">
       <div class="section-shell community-inner reveal">
         <div>
-          <div class="section-kicker">05 // COMMUNITY</div>
+          <div class="section-kicker">06 // COMMUNITY</div>
           <h2>FIND<br />THE EXIT.</h2>
         </div>
         <div class="community-actions">
+          <a class="community-link" href="#founding25"><span>THE FOUNDING 25</span><b>↗</b></a>
           <a class="community-link" href="https://arcpad.meme/token/0x1b556933D64AE9bb32044711C5393B2E5663d185" target="_blank" rel="noopener noreferrer"><span>TRADE $EXIT</span><b>↗</b></a>
           <a class="community-link" href="monitor/"><span>ARC LAUNCH MONITOR</span><b>↗</b></a>
           <a class="community-link" href="https://x.com/EXITARC" target="_blank" rel="noopener noreferrer"><span>X / @EXITARC</span><b>↗</b></a>
-          <a class="community-link" href="https://exitonarc.xyz"><span>EXITONARC.XYZ</span><b>↗</b></a>
         </div>
       </div>
     </section>
@@ -214,5 +269,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite">CONTRACT COPIED</div>
   <script src="script.js"></script>
+  <script src="founding.js"></script>
 </body>
 </html>
