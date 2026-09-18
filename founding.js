@@ -3,7 +3,9 @@
   const TARGET = 25;
   const BLOCKSCOUT = 'https://explorer.arc.io/api/v2';
   const ARC_RPC = 'https://rpc.arc-scan.org';
+  const ARC_CHAIN_ID = 5042;
   const BALANCE_OF_SELECTOR = '0x70a08231';
+  const DECIMALS_SELECTOR = '0x313ce567';
   const byId = (id) => document.getElementById(id);
 
   function setText(id, value) {
@@ -83,6 +85,26 @@
     const result = await rpc('eth_call', [{ to: CONTRACT, data: balanceOfData(address) }, 'latest']);
     if (!result || result === '0x') return 0n;
     return BigInt(result);
+  }
+
+  async function tokenDecimals() {
+    try {
+      const result = await rpc('eth_call', [{ to: CONTRACT, data: DECIMALS_SELECTOR }, 'latest']);
+      const decimals = Number(BigInt(result || '0x0'));
+      return Number.isInteger(decimals) && decimals >= 0 && decimals <= 36 ? decimals : 18;
+    } catch {
+      return 18;
+    }
+  }
+
+  function formatTokenBalance(value, decimals) {
+    const places = Math.min(Math.max(Number(decimals) || 0, 0), 36);
+    if (!places) return value.toString();
+    const base = 10n ** BigInt(places);
+    const whole = value / base;
+    const fraction = (value % base).toString().padStart(places, '0').slice(0, 6).replace(/0+$/, '');
+    const wholeText = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return fraction ? `${wholeText}.${fraction}` : wholeText;
   }
 
   async function readHolderCount() {
@@ -264,11 +286,152 @@
     }
   }
 
+  function setEligibilityResult(type, title, detail) {
+    const result = byId('foundingEligibilityResult');
+    const titleNode = byId('foundingEligibilityTitle');
+    const detailNode = byId('foundingEligibilityDetail');
+    if (!result || !titleNode || !detailNode) return;
+    result.hidden = false;
+    result.className = `founding-eligibility-result ${type}`;
+    titleNode.textContent = title;
+    detailNode.textContent = detail;
+  }
+
+  function claimMessage(address) {
+    return [
+      'Founding 25 claim for $EXIT on Arc',
+      `Wallet: ${address}`,
+      'Public name / X handle: [your choice]',
+      'I opt in to public Founding 25 recognition if this wallet and identity pass verification.'
+    ].join('\n');
+  }
+
+  function mountEligibilityChecker() {
+    const grid = document.querySelector('.founding-grid');
+    if (!grid || byId('foundingEligibility')) return;
+
+    const panel = document.createElement('section');
+    panel.className = 'founding-eligibility';
+    panel.id = 'foundingEligibility';
+    panel.setAttribute('aria-label', 'Check Founding 25 eligibility');
+    panel.innerHTML = `
+      <div class="founding-eligibility-head">
+        <div>
+          <span class="founding-panel-label">READ-ONLY ARC CHECK</span>
+          <h3>CHECK YOUR WALLET</h3>
+        </div>
+        <p>Paste a public Arc address. The site reads the $EXIT balance directly from Arc RPC. No wallet connection, approval, signature or transaction is requested.</p>
+      </div>
+      <form class="founding-eligibility-form" id="foundingEligibilityForm">
+        <label class="sr-only" for="foundingWalletAddress">Arc wallet address</label>
+        <input class="founding-eligibility-input" id="foundingWalletAddress" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="0x… Arc wallet address" aria-describedby="foundingEligibilityPrivacy" />
+        <button class="button button-primary" id="foundingEligibilityButton" type="submit">VERIFY ON ARC</button>
+      </form>
+      <div class="founding-eligibility-result checking" id="foundingEligibilityResult" role="status" aria-live="polite" hidden>
+        <strong id="foundingEligibilityTitle"></strong>
+        <span id="foundingEligibilityDetail"></span>
+      </div>
+      <div class="founding-claim-actions" id="foundingClaimActions" hidden>
+        <button class="button button-primary" id="copyFoundingClaim" type="button">COPY CLAIM MESSAGE</button>
+        <a class="button button-ghost" href="https://x.com/EXITARC" target="_blank" rel="noopener noreferrer">OPEN @EXITARC ↗</a>
+      </div>
+      <p class="founding-eligibility-footnote" id="foundingEligibilityPrivacy">This check does not reserve a spot. Founding membership still requires opt-in, identity review, one-person/one-spot review and an open roster position.</p>`;
+
+    grid.after(panel);
+
+    const form = byId('foundingEligibilityForm');
+    const input = byId('foundingWalletAddress');
+    const button = byId('foundingEligibilityButton');
+    const actions = byId('foundingClaimActions');
+    const copy = byId('copyFoundingClaim');
+    let claimAddress = null;
+
+    copy?.addEventListener('click', async () => {
+      if (!claimAddress) return;
+      try {
+        await navigator.clipboard.writeText(claimMessage(claimAddress));
+        const previous = copy.textContent;
+        copy.textContent = 'CLAIM MESSAGE COPIED';
+        setTimeout(() => { copy.textContent = previous; }, 1800);
+      } catch {
+        setEligibilityResult('manual', 'COPY FAILED', 'Your balance check is unchanged. Copy the wallet address manually and send it with your preferred public name or X handle to @EXITARC.');
+      }
+    });
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const address = String(input?.value || '').trim();
+      claimAddress = null;
+      if (actions) actions.hidden = true;
+
+      if (!validAddress(address)) {
+        setEligibilityResult('ineligible', 'INVALID ADDRESS', 'Enter a 42-character 0x Arc address. Nothing has been sent or signed.');
+        return;
+      }
+
+      const existing = document.querySelector(`.founding-member[data-address="${address.toLowerCase()}"]`);
+      if (existing) {
+        const label = existing.querySelector('.founding-member-number')?.textContent || 'FOUNDING MEMBER';
+        setEligibilityResult('eligible', 'ALREADY ON THE ROSTER', `${label} is already tied to ${shortAddress(address)}.`);
+        existing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'READING ARC…';
+      }
+      setEligibilityResult('checking', 'READING ARC', `Checking ${shortAddress(address)} directly against the $EXIT contract.`);
+
+      try {
+        const chainHex = await rpc('eth_chainId', []);
+        const chainId = Number.parseInt(chainHex, 16);
+        if (chainId !== ARC_CHAIN_ID) throw new Error(`Unexpected Arc RPC chain ID: ${chainId}`);
+
+        const [balance, code, decimals] = await Promise.all([
+          currentBalance(address),
+          rpc('eth_getCode', [address, 'latest']),
+          tokenDecimals()
+        ]);
+
+        if (balance <= 0n) {
+          setEligibilityResult('ineligible', 'NO $EXIT BALANCE FOUND', `${shortAddress(address)} currently has a zero $EXIT balance on Arc. No Founding claim was created.`);
+          return;
+        }
+
+        claimAddress = address;
+        if (actions) actions.hidden = false;
+        const balanceText = formatTokenBalance(balance, decimals);
+        const open = validCount(byId('foundingOpenSpots')?.textContent);
+        const spotText = open === 0
+          ? ' The public roster currently shows no open spots.'
+          : open != null
+            ? ` The public roster currently shows ${open} open spot${open === 1 ? '' : 's'}.`
+            : ' Roster availability is checked separately.';
+
+        if (code && code !== '0x' && code !== '0x0') {
+          setEligibilityResult('manual', 'BALANCE VERIFIED · MANUAL REVIEW', `${shortAddress(address)} holds ${balanceText} $EXIT, but the address contains contract code. Smart wallets can be legitimate, but pools, routers, protocol and project-controlled addresses do not qualify.${spotText}`);
+        } else {
+          setEligibilityResult('eligible', 'BALANCE VERIFIED', `${shortAddress(address)} holds ${balanceText} $EXIT on Arc and can request Founding 25 review.${spotText}`);
+        }
+      } catch (error) {
+        setEligibilityResult('manual', 'ARC READ UNAVAILABLE', 'The read-only RPC check could not complete. No wallet connection or transaction was attempted. Try again later or contact @EXITARC for manual verification.');
+        console.warn('Founding 25 eligibility check failed:', error);
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'VERIFY ON ARC';
+        }
+      }
+    });
+  }
+
   const note = document.querySelector('.founding-note');
   if (note) {
     note.textContent = 'The live holder-address count comes from Arc Explorer and can include pools, contracts, project wallets and people who never opted in. Founding 25 entries are separate: each published member must have a recorded positive $EXIT balance verified through direct Arc RPC at the time they are added. The page rechecks current balances live; selling later changes the badge to OG RECORD but does not erase permanent Founding recognition.';
   }
 
+  mountEligibilityChecker();
   loadHolderCount();
   loadRoster();
 })();

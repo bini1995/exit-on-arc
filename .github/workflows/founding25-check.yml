@@ -4,7 +4,9 @@ on:
   pull_request:
     paths:
       - 'founding.js'
+      - 'founding.css'
       - 'founding-verification.css'
+      - 'founding-eligibility.css'
       - 'founding-roster.json'
       - 'scripts/add-founding-member.mjs'
       - '.github/workflows/founding25-check.yml'
