@@ -26,6 +26,20 @@ if (copyButton) {
   });
 }
 
+function mountFoundingCampaignLink() {
+  const actions = document.querySelector('.founding-actions');
+  if (!actions || actions.querySelector('[data-founding-campaign-link]')) return;
+
+  const link = document.createElement('a');
+  link.className = 'button button-ghost';
+  link.href = 'founding/';
+  link.dataset.foundingCampaignLink = 'true';
+  link.textContent = 'SHARE FOUNDING 25 ↗';
+  actions.appendChild(link);
+}
+
+mountFoundingCampaignLink();
+
 const observer = new IntersectionObserver(
   entries => entries.forEach(entry => {
     if (entry.isIntersecting) {

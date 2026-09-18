@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050706" />
+  <meta name="description" content="The Founding 25 — permanent OG recognition for the first 25 genuine $EXIT holders on Arc, verified onchain with no giveaways or profit promises." />
+  <meta property="og:title" content="The Founding 25 | $EXIT on Arc" />
+  <meta property="og:description" content="Arc mainnet is live. $EXIT is documenting its first 25 genuine community holders with transparent onchain verification and permanent OG recognition." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://exitonarc.xyz/founding/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The Founding 25 | $EXIT on Arc" />
+  <meta name="twitter:description" content="25 real holders. Onchain verified. Permanent OG recognition. No giveaways. No fake traction." />
+  <title>The Founding 25 | $EXIT on Arc</title>
+  <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <header class="site-header founding-page-header">
+    <a class="brand" href="../" aria-label="Exit Liquidity home">
+      <img src="../logo.svg" alt="" />
+      <span>EXIT</span>
+    </a>
+    <nav class="nav" aria-label="Founding 25 navigation">
+      <a href="#how">How it works</a>
+      <a href="#roster">Roster</a>
+      <a href="../monitor/">Monitor</a>
+    </nav>
+    <a class="button button-small button-primary" href="../#foundingEligibility">Check wallet</a>
+  </header>
+
+  <main>
+    <section class="founding-campaign-hero section-shell">
+      <div class="campaign-grid" aria-hidden="true"></div>
+      <div class="campaign-kicker"><span class="status-dot"></span> ARC MAINNET // LIVE // $EXIT</div>
+      <h1>THE<br /><span>FOUNDING 25</span></h1>
+      <p class="campaign-lede">The first 25 genuine community members who opt in and verify a positive $EXIT balance become part of the permanent public record.</p>
+      <p class="campaign-sub">No giveaways. No promised returns. No fake wallets. No wash volume. Just the first real people who chose to be here while $EXIT was still tiny.</p>
+
+      <div class="campaign-actions">
+        <a class="button button-primary" href="../#foundingEligibility">Check your wallet ↗</a>
+        <a class="button button-ghost" href="https://arcpad.meme/token/0x1b556933D64AE9bb32044711C5393B2E5663d185" target="_blank" rel="noopener noreferrer">View $EXIT ↗</a>
+        <a class="button button-ghost" id="shareFoundingX" href="#" target="_blank" rel="noopener noreferrer">Share on X ↗</a>
+      </div>
+
+      <div class="campaign-contract">
+        <span>OFFICIAL $EXIT CONTRACT // ARC</span>
+        <code>0x1b556933D64AE9bb32044711C5393B2E5663d185</code>
+      </div>
+    </section>
+
+    <section class="campaign-status section-shell" aria-label="Founding 25 progress">
+      <article>
+        <span>VERIFIED FOUNDING MEMBERS</span>
+        <strong><b id="campaignVerified">—</b> / 25</strong>
+      </article>
+      <article>
+        <span>OPEN SPOTS</span>
+        <strong id="campaignOpen">—</strong>
+      </article>
+      <article>
+        <span>ONCHAIN HOLDER ADDRESSES</span>
+        <strong id="campaignHolders">—</strong>
+      </article>
+      <article>
+        <span>HOLDER READ</span>
+        <strong id="campaignHolderStatus" class="campaign-warn">WAITING</strong>
+      </article>
+      <div class="campaign-progress"><span id="campaignProgressFill"></span></div>
+    </section>
+
+    <section class="campaign-section section-shell" id="how">
+      <div class="section-kicker">01 // HOW IT WORKS</div>
+      <div class="campaign-two-col">
+        <div>
+          <h2>EARLY SHOULD<br /><span>MEAN SOMETHING.</span></h2>
+        </div>
+        <div class="campaign-rules">
+          <p><strong>01 // Hold $EXIT on Arc.</strong><br />A positive balance is required when the Founding spot is verified.</p>
+          <p><strong>02 // Opt in.</strong><br />You choose the public name or X handle attached to your spot. Wallets are not published as Founding members without opt-in.</p>
+          <p><strong>03 // One person, one spot.</strong><br />Pools, routers, protocol addresses, project-controlled wallets and obvious duplicate-wallet attempts do not qualify.</p>
+          <p><strong>04 // Permanent record.</strong><br />Once legitimately verified and published, the Founding recognition remains part of $EXIT history even if you later sell.</p>
+          <p><strong>05 // Recognition only.</strong><br />A Founding spot is not a token reward, giveaway, governance right, profit promise or future compensation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="campaign-section section-shell" id="roster">
+      <div class="campaign-roster-head">
+        <div>
+          <div class="section-kicker">02 // PUBLIC ROSTER</div>
+          <h2>25 SLOTS.<br /><span>NO INVENTED PEOPLE.</span></h2>
+        </div>
+        <p>Only stored entries with recorded direct Arc RPC balance proof are rendered as Founding members. Empty means empty.</p>
+      </div>
+      <div class="campaign-roster-grid" id="campaignRosterGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="campaign-cta section-shell">
+      <span>FOUNDING SPOTS ARE NOT RESERVED BY VISITING THIS PAGE.</span>
+      <h2>VERIFY FIRST.<br />THEN OPT IN.</h2>
+      <div class="campaign-actions">
+        <a class="button button-primary" href="../#foundingEligibility">Check $EXIT balance ↗</a>
+        <a class="button button-ghost" href="https://x.com/EXITARC" target="_blank" rel="noopener noreferrer">Contact @EXITARC ↗</a>
+        <button class="button button-ghost" id="copyFoundingLink" type="button">Copy Founding link</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell campaign-footer">
+    <div class="footer-brand">
+      <img src="../logo.svg" alt="" />
+      <strong>EXIT LIQUIDITY</strong>
+    </div>
+    <p>$EXIT is an independent community memecoin on Arc. Founding 25 recognition is non-financial and does not promise value, profit, rewards or compensation. Cryptocurrency is highly volatile. Nothing on this website is financial advice.</p>
+  </footer>
+
+  <script src="landing.js"></script>
+</body>
+</html>

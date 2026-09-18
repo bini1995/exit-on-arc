@@ -3,11 +3,13 @@ name: Founding 25 checks
 on:
   pull_request:
     paths:
+      - 'script.js'
       - 'founding.js'
       - 'founding.css'
       - 'founding-verification.css'
       - 'founding-eligibility.css'
       - 'founding-roster.json'
+      - 'founding/**'
       - 'scripts/add-founding-member.mjs'
       - '.github/workflows/founding25-check.yml'
   workflow_dispatch:
@@ -25,7 +27,9 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: |
+          node --check script.js
           node --check founding.js
+          node --check founding/landing.js
           node --check scripts/add-founding-member.mjs
       - name: Check roster schema
         run: |
