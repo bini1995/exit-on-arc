@@ -1,0 +1,118 @@
+.founding-eligibility {
+  position: relative;
+  margin-top: 22px;
+  border: 1px solid var(--line-soft);
+  background:
+    linear-gradient(135deg, rgba(0, 255, 71, .035), transparent 55%),
+    #050805;
+  padding: 24px;
+}
+
+.founding-eligibility-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+
+.founding-eligibility-head h3 {
+  margin: 4px 0 0;
+  font-size: clamp(1.45rem, 3vw, 2.4rem);
+  letter-spacing: -.035em;
+}
+
+.founding-eligibility-head p {
+  max-width: 560px;
+  margin: 0;
+  color: #7c867e;
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.founding-eligibility-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.founding-eligibility-input {
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: #020503;
+  color: var(--text);
+  padding: 14px 16px;
+  font: 600 .78rem/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  outline: none;
+}
+
+.founding-eligibility-input::placeholder { color: #4d554f; }
+
+.founding-eligibility-input:focus {
+  border-color: rgba(0, 255, 71, .5);
+  box-shadow: 0 0 0 1px rgba(0, 255, 71, .08), 0 0 24px rgba(0, 255, 71, .05);
+}
+
+.founding-eligibility-result {
+  margin-top: 12px;
+  border: 1px solid var(--line-soft);
+  background: #040705;
+  padding: 14px 16px;
+}
+
+.founding-eligibility-result[hidden] { display: none; }
+
+.founding-eligibility-result strong,
+.founding-eligibility-result span {
+  display: block;
+}
+
+.founding-eligibility-result strong {
+  margin-bottom: 6px;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.founding-eligibility-result span {
+  color: #8a948c;
+  font-size: .68rem;
+  line-height: 1.5;
+}
+
+.founding-eligibility-result.checking strong { color: #ffcc4d; }
+.founding-eligibility-result.eligible strong { color: var(--green); }
+.founding-eligibility-result.manual strong { color: #d7b96a; }
+.founding-eligibility-result.ineligible strong { color: #ff7272; }
+
+.founding-claim-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.founding-claim-actions[hidden] { display: none; }
+
+.founding-eligibility-footnote {
+  margin: 10px 0 0;
+  color: #5f6861;
+  font-size: .6rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .founding-eligibility-head {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .founding-eligibility-form {
+    grid-template-columns: 1fr;
+  }
+
+  .founding-eligibility-form .button,
+  .founding-claim-actions .button {
+    width: 100%;
+  }
+}
