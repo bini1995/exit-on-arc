@@ -1,0 +1,47 @@
+name: Founding 25 checks
+
+on:
+  pull_request:
+    paths:
+      - 'founding.js'
+      - 'founding-verification.css'
+      - 'founding-roster.json'
+      - 'scripts/add-founding-member.mjs'
+      - '.github/workflows/founding25-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check founding.js
+          node --check scripts/add-founding-member.mjs
+      - name: Check roster schema
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const roster = JSON.parse(fs.readFileSync('founding-roster.json', 'utf8'));
+          if (roster.schemaVersion !== 2) throw new Error('founding-roster.json must use schemaVersion 2');
+          if (!Array.isArray(roster.members)) throw new Error('members must be an array');
+          if (roster.members.length > 25) throw new Error('Founding roster cannot exceed 25 entries');
+          const seen = new Set();
+          for (const [index, member] of roster.members.entries()) {
+            if (!/^0x[a-fA-F0-9]{40}$/.test(member.address || '')) throw new Error(`Invalid address at member ${index + 1}`);
+            const address = member.address.toLowerCase();
+            if (seen.has(address)) throw new Error(`Duplicate address: ${address}`);
+            seen.add(address);
+            if (member?.verification?.method !== 'arc-rpc-balanceOf') throw new Error(`Missing RPC verification at member ${index + 1}`);
+            if (!Number.isInteger(member?.verification?.verifiedAtBlock) || member.verification.verifiedAtBlock <= 0) throw new Error(`Invalid verification block at member ${index + 1}`);
+            if (BigInt(member?.verification?.verifiedBalanceRaw || '0') <= 0n) throw new Error(`Verification balance must be positive at member ${index + 1}`);
+          }
+          console.log(`Roster schema valid: ${roster.members.length}/25 verified entries`);
+          NODE
