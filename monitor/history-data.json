@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-21T22:02:23.585Z",
+  "generatedAt": "2026-09-22T05:08:09.883Z",
   "intervalHours": 6,
   "retentionDays": 30,
   "tokens": {
@@ -464,9 +464,33 @@
           "token0": "0x1b556933d64ae9bb32044711c5393b2e5663d185",
           "token1": "0x3600000000000000000000000000000000000000",
           "directUsdcPair": true
+        },
+        {
+          "timestamp": "2026-09-22T05:08:09.883Z",
+          "pool": "0xD50e6E961e1302798dd5111d464600c838d8821B",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 0,
+          "priceUsd": 0.0000029941666675926782,
+          "arcPadPriceUsd": 0.000003021398575991,
+          "reportedLiquidityUsd": null,
+          "reportedVolume24hUsd": null,
+          "reportedTxns24h": 0,
+          "marketCapUsd": 3021.398575991,
+          "usdcReserve": 12.107215,
+          "tokenReserve": 995950017.2521387,
+          "tokenValueAtSpotUsd": 2982.040344244707,
+          "usdcSharePct": 0.40436266952234395,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": -403519,
+          "token0": "0x1b556933d64ae9bb32044711c5393b2e5663d185",
+          "token1": "0x3600000000000000000000000000000000000000",
+          "directUsdcPair": true
         }
       ],
-      "lastSuccessAt": "2026-09-21T22:02:23.585Z",
+      "lastSuccessAt": "2026-09-22T05:08:09.883Z",
       "lastError": null
     },
     "0xc21dacff018d3c606e091809dbe83d079c9e2e01": {
@@ -929,9 +953,33 @@
           "token0": "0x3600000000000000000000000000000000000000",
           "token1": "0xc21dacff018d3c606e091809dbe83d079c9e2e01",
           "directUsdcPair": true
+        },
+        {
+          "timestamp": "2026-09-22T05:08:09.883Z",
+          "pool": "0xA57A7ffd479A3bed1Daad5Cf07A10ba74002e9c3",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 0,
+          "priceUsd": 0.00000300217585252818,
+          "arcPadPriceUsd": 0.000002974039300427,
+          "reportedLiquidityUsd": null,
+          "reportedVolume24hUsd": null,
+          "reportedTxns24h": 0,
+          "marketCapUsd": 2974.039300427,
+          "usdcReserve": 16.062952,
+          "tokenReserve": 994620635.5879871,
+          "tokenValueAtSpotUsd": 2986.0260545884853,
+          "usdcSharePct": 0.535059152634972,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": 403492,
+          "token0": "0x3600000000000000000000000000000000000000",
+          "token1": "0xc21dacff018d3c606e091809dbe83d079c9e2e01",
+          "directUsdcPair": true
         }
       ],
-      "lastSuccessAt": "2026-09-21T22:02:23.585Z",
+      "lastSuccessAt": "2026-09-22T05:08:09.883Z",
       "lastError": null
     },
     "0x03e854c019bba45b08ea56c72dcb0fc3853633b2": {
@@ -1394,9 +1442,33 @@
           "token0": "0x03e854c019bba45b08ea56c72dcb0fc3853633b2",
           "token1": "0x3600000000000000000000000000000000000000",
           "directUsdcPair": true
+        },
+        {
+          "timestamp": "2026-09-22T05:08:09.883Z",
+          "pool": "0x5ae64Be10D9Ab07974E960E5D11D500c552c3b9a",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 0,
+          "priceUsd": 0.0000029755585480202355,
+          "arcPadPriceUsd": 0.000002950152480417,
+          "reportedLiquidityUsd": null,
+          "reportedVolume24hUsd": null,
+          "reportedTxns24h": 0,
+          "marketCapUsd": 2950.152480417,
+          "usdcReserve": 2.796396,
+          "tokenReserve": 999059328.0897721,
+          "tokenValueAtSpotUsd": 2972.7595236768743,
+          "usdcSharePct": 0.09397894294332973,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": -403582,
+          "token0": "0x03e854c019bba45b08ea56c72dcb0fc3853633b2",
+          "token1": "0x3600000000000000000000000000000000000000",
+          "directUsdcPair": true
         }
       ],
-      "lastSuccessAt": "2026-09-21T22:02:23.585Z",
+      "lastSuccessAt": "2026-09-22T05:08:09.883Z",
       "lastError": null
     },
     "0xc786c521f01db3056e9588852ee1d74268f06012": {
@@ -1859,9 +1931,33 @@
           "token0": "0x3600000000000000000000000000000000000000",
           "token1": "0xc786c521f01db3056e9588852ee1d74268f06012",
           "directUsdcPair": true
+        },
+        {
+          "timestamp": "2026-09-22T05:08:09.883Z",
+          "pool": "0x9300B1d5df7C3EDF469b443dfb25814fA542C519",
+          "poolSource": "arcpad_launch",
+          "dexPairCount": 0,
+          "priceUsd": 0.0000030086566093588147,
+          "arcPadPriceUsd": 0.00000297946,
+          "reportedLiquidityUsd": null,
+          "reportedVolume24hUsd": null,
+          "reportedTxns24h": 0,
+          "marketCapUsd": 2979.46,
+          "usdcReserve": 19.284145,
+          "tokenReserve": 993551833.4130841,
+          "tokenValueAtSpotUsd": 2989.256290338844,
+          "usdcSharePct": 0.6409800836806129,
+          "composition": "HIGHLY_ONE_SIDED",
+          "feeTier": 10000,
+          "feePercent": 1,
+          "activeLiquidity": "1723358097522708349",
+          "currentTick": 403470,
+          "token0": "0x3600000000000000000000000000000000000000",
+          "token1": "0xc786c521f01db3056e9588852ee1d74268f06012",
+          "directUsdcPair": true
         }
       ],
-      "lastSuccessAt": "2026-09-21T22:02:23.585Z",
+      "lastSuccessAt": "2026-09-22T05:08:09.883Z",
       "lastError": null
     }
   },
